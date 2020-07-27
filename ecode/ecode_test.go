@@ -13,8 +13,9 @@ func TestECodeError(t *testing.T) {
 		{err: ECode(0), str: "unknown error (0)"},
 		{err: ErrNullPointer, str: "Null reference instance"},
 		{err: ErrNoCommand, str: "No command"},
-		{err: ErrNoData, str: "No response data"},
-		{err: ECode(4), str: "unknown error (4)"},
+		{err: ErrNoData, str: "No data"},
+		{err: ErrCannotDetect, str: "Cannot detect character encoding"},
+		{err: ECode(5), str: "unknown error (5)"},
 	}
 
 	for _, tc := range testCases {

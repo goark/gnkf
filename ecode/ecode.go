@@ -9,12 +9,14 @@ const (
 	ErrNullPointer ECode = iota + 1
 	ErrNoCommand
 	ErrNoData
+	ErrCannotDetect
 )
 
 var errMessages = map[ECode]string{
-	ErrNullPointer: "Null reference instance",
-	ErrNoCommand:   "No command",
-	ErrNoData:      "No response data",
+	ErrNullPointer:  "Null reference instance",
+	ErrNoCommand:    "No command",
+	ErrNoData:       "No data",
+	ErrCannotDetect: "Cannot detect character encoding",
 }
 
 func (e ECode) Error() string {

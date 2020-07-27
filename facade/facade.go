@@ -33,7 +33,10 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 	rootCmd.SetArgs(args)               //arguments of command-line
 	rootCmd.SetIn(ui.Reader())          //Stdin
 	rootCmd.SetOutput(ui.ErrorWriter()) //Stdout and Stderr
-	rootCmd.AddCommand(newVersionCmd(ui))
+	rootCmd.AddCommand(
+		newVersionCmd(ui),
+		newGuessCmd(ui),
+	)
 
 	//global options
 	rootCmd.PersistentFlags().BoolVarP(&debugFlag, "debug", "", false, "for debug")
