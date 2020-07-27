@@ -29,7 +29,7 @@ func newGuessCmd(ui *rwi.RWI) *cobra.Command {
 				return debugPrint(ui, errs.Wrap(err, "Error in --all option"))
 			}
 
-			//Run command
+			//Input stream
 			r := ui.Reader()
 			if len(path) > 0 {
 				file, err := os.Open(path)
@@ -39,6 +39,8 @@ func newGuessCmd(ui *rwi.RWI) *cobra.Command {
 				defer file.Close()
 				r = file
 			}
+
+			//Run command
 			ss, err := guess.Encoding(r)
 			if err != nil {
 				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("path", path)))

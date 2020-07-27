@@ -27,7 +27,7 @@ func newDumpCmd(ui *rwi.RWI) *cobra.Command {
 				return debugPrint(ui, errs.Wrap(err, "Error in --unicode option"))
 			}
 
-			//Run command
+			//Input stream
 			r := ui.Reader()
 			if len(path) > 0 {
 				file, err := os.Open(path)
@@ -37,6 +37,8 @@ func newDumpCmd(ui *rwi.RWI) *cobra.Command {
 				defer file.Close()
 				r = file
 			}
+
+			//Run command
 			if flagUnicode {
 				return debugPrint(ui, errs.Wrap(dump.UnicodePoint(ui.Writer(), r), "", errs.WithContext("path", path)))
 			}

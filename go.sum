@@ -81,8 +81,8 @@ github.com/spf13/jwalterweatherman v1.0.0/go.mod h1:cQK4TGJAtQXfYWX+Ddv3mKDzgVb6
 github.com/spf13/pflag v1.0.3 h1:zPAT6CGy6wXeQ7NtTnaTerfKOsV6V6F8agHXFiazDkg=
 github.com/spf13/pflag v1.0.3/go.mod h1:DYY7MBk1bdzusC3SYhjObp+wFpr4gzcvqqNjLnInEg4=
 github.com/spf13/viper v1.4.0/go.mod h1:PTJ7Z/lr49W6bUbkmS1V3by4uWynFiR9p7+dSq/yZzE=
-github.com/spiegel-im-spiegel/errs v0.5.0 h1:O9oPxaKN/kDp8ll+O641tOMd3ZZvSj9Xu1p4Cth9LRE=
-github.com/spiegel-im-spiegel/errs v0.5.0/go.mod h1:Jujf5sflbBjtoDlSg182WpGtBqeSCHeR6owzyPgT82A=
+github.com/spiegel-im-spiegel/errs v0.5.1 h1:RGg8P2h+e+BTJoA2rrjvmcUXhXSD1ASXIhVw9PN8uws=
+github.com/spiegel-im-spiegel/errs v0.5.1/go.mod h1:Jujf5sflbBjtoDlSg182WpGtBqeSCHeR6owzyPgT82A=
 github.com/spiegel-im-spiegel/gocli v0.10.1 h1:XWyq4dKFp2xTjiH2P2bxPZyi0++4IHp9HOksgGdfwpA=
 github.com/spiegel-im-spiegel/gocli v0.10.1/go.mod h1:9vRvly2giutJ2sAtQjrw570p9ulJA3twgKlurmnj12g=
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
