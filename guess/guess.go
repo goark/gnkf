@@ -13,7 +13,7 @@ import (
 //Encoding detects guesses of character encoding name from byte stream
 func Encoding(txt io.Reader) ([]string, error) {
 	if txt == nil {
-		return nil, errs.Wrap(ecode.ErrNullPointer, "")
+		return nil, errs.WrapWithCause(ecode.ErrNullPointer, nil)
 	}
 	buf := &bytes.Buffer{}
 	if _, err := buf.ReadFrom(txt); err != nil {
@@ -26,7 +26,7 @@ func Encoding(txt io.Reader) ([]string, error) {
 func EncodingBytes(b []byte) ([]string, error) {
 	all, err := chardet.NewTextDetector().DetectAll(b)
 	if err != nil {
-		return nil, errs.Wrap(ecode.ErrCannotDetect, "", errs.WithContext("CauseError", err.Error()))
+		return nil, errs.WrapWithCause(ecode.ErrCannotDetect, err)
 	}
 	sort.SliceStable(all, func(i, j int) bool {
 		if all[i].Confidence != all[j].Confidence {

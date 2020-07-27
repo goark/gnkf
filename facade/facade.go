@@ -5,6 +5,7 @@ import (
 	"runtime"
 
 	"github.com/spf13/cobra"
+	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gnkf/ecode"
 	"github.com/spiegel-im-spiegel/gocli/exitcode"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
@@ -27,7 +28,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 		Short: "Network Kanji Filter by Golang",
 		Long:  "Network Kanji Filter by Golang",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return debugPrint(ui, ecode.ErrNoCommand)
+			return debugPrint(ui, errs.WrapWithCause(ecode.ErrNoCommand, nil))
 		},
 	}
 	rootCmd.SetArgs(args)               //arguments of command-line

@@ -42,7 +42,7 @@ func UnicodePoint(w io.Writer, r io.Reader) error {
 		return errs.Wrap(err, "")
 	}
 	if !utf8.Valid(buf.Bytes()) {
-		return errs.Wrap(ecode.ErrInvalidUTF8Text, "")
+		return errs.WrapWithCause(ecode.ErrInvalidUTF8Text, nil)
 	}
 
 	sep := ""

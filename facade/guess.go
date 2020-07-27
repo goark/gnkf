@@ -44,7 +44,7 @@ func newGuessCmd(ui *rwi.RWI) *cobra.Command {
 				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("path", path)))
 			}
 			if len(ss) == 0 {
-				return debugPrint(ui, errs.Wrap(ecode.ErrNoData, "", errs.WithContext("path", path)))
+				return debugPrint(ui, errs.WrapWithCause(ecode.ErrNoData, nil, errs.WithContext("path", path)))
 			}
 			if flagAll {
 				err = ui.Outputln(strings.Join(ss, "\n"))
