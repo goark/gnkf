@@ -68,6 +68,35 @@ func TestNormalize(t *testing.T) {
 	}
 }
 
+func TestNormKangxiRadicals(t *testing.T) {
+	testCases := []struct {
+		inp, out []byte
+		err      error
+	}{
+		{
+			inp: []byte("埼⽟"), //U+57FC, U+2F5F
+			out: []byte("埼玉"), //U+57FC, U+7389
+			err: nil,
+		},
+		{
+			inp: []byte{0x82, 0xb1, 0x82, 0xf1, 0x82, 0xc9, 0x82, 0xbf, 0x82, 0xcd, 0x81, 0x43, 0x90, 0xa2, 0x8a, 0x45, 0x81, 0x49}, //"こんにちは，世界！" by Shift_JIS encoding
+			out: []byte{},
+			err: ecode.ErrInvalidUTF8Text,
+		},
+	}
+	for _, tc := range testCases {
+		buf := &bytes.Buffer{}
+		if err := NormKangxiRadicals(buf, bytes.NewReader(tc.inp)); err != nil {
+			if !errs.Is(err, tc.err) {
+				t.Errorf("NormKangxiRadicals() error = \"%+v\", want \"%+v\".", err, tc.err)
+			}
+		} else if !bytes.Equal(buf.Bytes(), tc.out) {
+			t.Error("NormKangxiRadicals() result wrong translation: ")
+			dump.Octet(os.Stdout, buf)
+		}
+	}
+}
+
 /* Copyright 2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
