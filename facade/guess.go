@@ -20,9 +20,9 @@ func newGuessCmd(ui *rwi.RWI) *cobra.Command {
 		Long:    "Guess character encoding of text",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//Options
-			path, err := cmd.Flags().GetString("src")
+			path, err := cmd.Flags().GetString("file")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --src option"))
+				return debugPrint(ui, errs.Wrap(err, "Error in --file option"))
 			}
 			flagAll, err := cmd.Flags().GetBool("all")
 			if err != nil {
@@ -34,7 +34,7 @@ func newGuessCmd(ui *rwi.RWI) *cobra.Command {
 			if len(path) > 0 {
 				file, err := os.Open(path)
 				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("path", path)))
+					return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", path)))
 				}
 				defer file.Close()
 				r = file
@@ -43,10 +43,10 @@ func newGuessCmd(ui *rwi.RWI) *cobra.Command {
 			//Run command
 			ss, err := guess.Encoding(r)
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("path", path)))
+				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", path)))
 			}
 			if len(ss) == 0 {
-				return debugPrint(ui, errs.WrapWithCause(ecode.ErrNoData, nil, errs.WithContext("path", path)))
+				return debugPrint(ui, errs.WrapWithCause(ecode.ErrNoData, nil, errs.WithContext("file", path)))
 			}
 			if flagAll {
 				err = ui.Outputln(strings.Join(ss, "\n"))
@@ -56,7 +56,7 @@ func newGuessCmd(ui *rwi.RWI) *cobra.Command {
 			return debugPrint(ui, errs.Wrap(err, ""))
 		},
 	}
-	guessCmd.Flags().StringP("src", "s", "", "path of source text")
+	guessCmd.Flags().StringP("file", "f", "", "path of input text file")
 	guessCmd.Flags().BoolP("all", "", false, "print all guesses")
 
 	return guessCmd

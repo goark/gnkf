@@ -16,7 +16,9 @@ func TestECodeError(t *testing.T) {
 		{err: ErrNoData, str: "No data"},
 		{err: ErrCannotDetect, str: "Cannot detect character encoding"},
 		{err: ErrInvalidUTF8Text, str: "Invalid UTF-8 text"},
-		{err: ECode(6), str: "unknown error (6)"},
+		{err: ErrNotSuppotEncoding, str: "Not Support IANA encoding name"},
+		{err: ErrInvalidEncoding, str: "Text is Invalid encoding"},
+		{err: ECode(9), str: "unknown error (9)"},
 	}
 
 	for _, tc := range testCases {

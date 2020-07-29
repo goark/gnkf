@@ -11,14 +11,18 @@ const (
 	ErrNoData
 	ErrCannotDetect
 	ErrInvalidUTF8Text
+	ErrNotSuppotEncoding
+	ErrInvalidEncoding
 )
 
 var errMessages = map[ECode]string{
-	ErrNullPointer:     "Null reference instance",
-	ErrNoCommand:       "No command",
-	ErrNoData:          "No data",
-	ErrCannotDetect:    "Cannot detect character encoding",
-	ErrInvalidUTF8Text: "Invalid UTF-8 text",
+	ErrNullPointer:       "Null reference instance",
+	ErrNoCommand:         "No command",
+	ErrNoData:            "No data",
+	ErrCannotDetect:      "Cannot detect character encoding",
+	ErrInvalidUTF8Text:   "Invalid UTF-8 text",
+	ErrNotSuppotEncoding: "Not Support IANA encoding name",
+	ErrInvalidEncoding:   "Text is Invalid encoding",
 }
 
 func (e ECode) Error() string {

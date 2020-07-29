@@ -18,9 +18,9 @@ func newDumpCmd(ui *rwi.RWI) *cobra.Command {
 		Long:    "Hexadecimal view of octet data stream with C language array style.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//Options
-			path, err := cmd.Flags().GetString("src")
+			path, err := cmd.Flags().GetString("file")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --src option"))
+				return debugPrint(ui, errs.Wrap(err, "Error in --file option"))
 			}
 			flagUnicode, err := cmd.Flags().GetBool("unicode")
 			if err != nil {
@@ -32,7 +32,7 @@ func newDumpCmd(ui *rwi.RWI) *cobra.Command {
 			if len(path) > 0 {
 				file, err := os.Open(path)
 				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("path", path)))
+					return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", path)))
 				}
 				defer file.Close()
 				r = file
@@ -40,12 +40,12 @@ func newDumpCmd(ui *rwi.RWI) *cobra.Command {
 
 			//Run command
 			if flagUnicode {
-				return debugPrint(ui, errs.Wrap(dump.UnicodePoint(ui.Writer(), r), "", errs.WithContext("path", path)))
+				return debugPrint(ui, errs.Wrap(dump.UnicodePoint(ui.Writer(), r), "", errs.WithContext("file", path)))
 			}
-			return debugPrint(ui, errs.Wrap(dump.Octet(ui.Writer(), r), "", errs.WithContext("path", path)))
+			return debugPrint(ui, errs.Wrap(dump.Octet(ui.Writer(), r), "", errs.WithContext("file", path)))
 		},
 	}
-	dumpCmd.Flags().StringP("src", "s", "", "path of source text")
+	dumpCmd.Flags().StringP("file", "f", "", "path of input text file")
 	dumpCmd.Flags().BoolP("unicode", "u", false, "print by Unicode code point (UTF-8 only)")
 
 	return dumpCmd
