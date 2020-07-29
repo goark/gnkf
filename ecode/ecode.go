@@ -13,6 +13,7 @@ const (
 	ErrInvalidUTF8Text
 	ErrNotSuppotEncoding
 	ErrInvalidEncoding
+	ErrInvalidNormForm
 )
 
 var errMessages = map[ECode]string{
@@ -22,7 +23,8 @@ var errMessages = map[ECode]string{
 	ErrCannotDetect:      "Cannot detect character encoding",
 	ErrInvalidUTF8Text:   "Invalid UTF-8 text",
 	ErrNotSuppotEncoding: "Not Support IANA encoding name",
-	ErrInvalidEncoding:   "Text is Invalid encoding",
+	ErrInvalidEncoding:   "Text is invalid encoding",
+	ErrInvalidNormForm:   "Invalid Unicode normalization form",
 }
 
 func (e ECode) Error() string {

@@ -1,28 +1,23 @@
 package facade
 
 import (
-	"bytes"
-	"io"
+	"fmt"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/enc"
-	"github.com/spiegel-im-spiegel/gnkf/guess"
+	"github.com/spiegel-im-spiegel/gnkf/nrm"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
-var description = `Guess character encoding of text.
- Using MIME and IANA name as the character encoding name.
- Refer: http://www.iana.org/assignments/character-sets/character-sets.xhtml`
-
-//newEncCmd returns cobra.Command instance for show sub-command
-func newEncCmd(ui *rwi.RWI) *cobra.Command {
-	encCmd := &cobra.Command{
-		Use:     "enc",
-		Aliases: []string{"encoding", "e"},
-		Short:   "Translate character encoding of text",
-		Long:    description,
+//newNormCmd returns cobra.Command instance for show sub-command
+func newNormCmd(ui *rwi.RWI) *cobra.Command {
+	normCmd := &cobra.Command{
+		Use:     "norm",
+		Aliases: []string{"normalize", "nrm"},
+		Short:   "Unicode normalization",
+		Long:    "Unicode normalization (UTF-8 text only)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//Options
 			inp, err := cmd.Flags().GetString("file")
@@ -33,17 +28,9 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 			if err != nil {
 				return debugPrint(ui, errs.Wrap(err, "Error in --output option"))
 			}
-			from, err := cmd.Flags().GetString("src-encoding")
+			form, err := cmd.Flags().GetString("norm-form")
 			if err != nil {
 				return debugPrint(ui, errs.Wrap(err, "Error in --src-encoding option"))
-			}
-			to, err := cmd.Flags().GetString("dst-encoding")
-			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --dst-encoding option"))
-			}
-			flagGuess, err := cmd.Flags().GetBool("guess")
-			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --guess option"))
 			}
 
 			//Input stream
@@ -55,17 +42,6 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 				}
 				defer file.Close()
 				r = file
-			}
-			if flagGuess {
-				dup := &bytes.Buffer{}
-				ss, err := guess.Encoding(io.TeeReader(r, dup))
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, "error in guess text", errs.WithContext("file", inp)))
-				}
-				if len(ss) > 0 {
-					from = ss[0]
-				}
-				r = dup
 			}
 
 			//Output stream
@@ -80,19 +56,17 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 			}
 
 			//Run command
-			if err := enc.Translate(to, w, from, r); err != nil {
+			if err := nrm.Normalize(form, w, r); err != nil {
 				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp), errs.WithContext("output", out)))
 			}
 			return nil
 		},
 	}
-	encCmd.Flags().StringP("file", "f", "", "path of input text file")
-	encCmd.Flags().StringP("output", "o", "", "path of output file")
-	encCmd.Flags().StringP("src-encoding", "s", "utf-8", "character encoding name of source text")
-	encCmd.Flags().StringP("dst-encoding", "d", "utf-8", "character encoding name of output text")
-	encCmd.Flags().BoolP("guess", "g", false, "guess character encoding of source text")
+	normCmd.Flags().StringP("file", "f", "", "path of input text file")
+	normCmd.Flags().StringP("output", "o", "", "path of output file")
+	normCmd.Flags().StringP("norm-form", "n", "nfc", fmt.Sprintf("Unicode normalization form: [%s]", strings.Join(nrm.FormList(), "|")))
 
-	return encCmd
+	return normCmd
 }
 
 /* Copyright 2020 Spiegel

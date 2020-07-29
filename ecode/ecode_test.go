@@ -17,7 +17,8 @@ func TestECodeError(t *testing.T) {
 		{err: ErrCannotDetect, str: "Cannot detect character encoding"},
 		{err: ErrInvalidUTF8Text, str: "Invalid UTF-8 text"},
 		{err: ErrNotSuppotEncoding, str: "Not Support IANA encoding name"},
-		{err: ErrInvalidEncoding, str: "Text is Invalid encoding"},
+		{err: ErrInvalidEncoding, str: "Text is invalid encoding"},
+		{err: ErrInvalidNormForm, str: "Invalid Unicode normalization form"},
 		{err: ECode(9), str: "unknown error (9)"},
 	}
 

@@ -40,9 +40,14 @@ func newDumpCmd(ui *rwi.RWI) *cobra.Command {
 
 			//Run command
 			if flagUnicode {
-				return debugPrint(ui, errs.Wrap(dump.UnicodePoint(ui.Writer(), r), "", errs.WithContext("file", path)))
+				err = dump.UnicodePoint(ui.Writer(), r)
+			} else {
+				err = dump.Octet(ui.Writer(), r)
 			}
-			return debugPrint(ui, errs.Wrap(dump.Octet(ui.Writer(), r), "", errs.WithContext("file", path)))
+			if err != nil {
+				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", path)))
+			}
+			return debugPrint(ui, errs.Wrap(ui.Outputln(), "", errs.WithContext("file", path)))
 		},
 	}
 	dumpCmd.Flags().StringP("file", "f", "", "path of input text file")

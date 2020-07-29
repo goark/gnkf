@@ -2,7 +2,6 @@ package dump
 
 import (
 	"bytes"
-	"strings"
 	"testing"
 
 	"github.com/spiegel-im-spiegel/errs"
@@ -34,9 +33,8 @@ func TestOctet(t *testing.T) {
 		if !errs.Is(err, tc.err) {
 			t.Errorf("Octet() error = \"%+v\", want \"%+v\".", err, tc.err)
 		}
-		str := strings.TrimSpace(out.String())
-		if str != tc.res {
-			t.Errorf("Octet() = \"%v\", want \"%v\".", str, tc.res)
+		if out.String() != tc.res {
+			t.Errorf("Octet() = \"%v\", want \"%v\".", out.String(), tc.res)
 		}
 	}
 }
@@ -60,9 +58,8 @@ func TestUnicodePoint(t *testing.T) {
 		if !errs.Is(err, tc.err) {
 			t.Errorf("UnicodePoint() error = \"%+v\", want \"%+v\".", err, tc.err)
 		}
-		str := strings.TrimSpace(out.String())
-		if str != tc.res {
-			t.Errorf("UnicodePoint() = \"%v\", want \"%v\".", str, tc.res)
+		if out.String() != tc.res {
+			t.Errorf("UnicodePoint() = \"%v\", want \"%v\".", out.String(), tc.res)
 		}
 	}
 }

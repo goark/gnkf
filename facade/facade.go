@@ -39,6 +39,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 		newGuessCmd(ui),
 		newDumpCmd(ui),
 		newEncCmd(ui),
+		newNormCmd(ui),
 	)
 
 	//global options

@@ -15,7 +15,6 @@ import (
 func Octet(w io.Writer, r io.Reader) error {
 	sep := ""
 	inp := bufio.NewReader(r)
-	out := bufio.NewWriter(w)
 	for {
 		b, err := inp.ReadByte()
 		if err != nil {
@@ -24,13 +23,8 @@ func Octet(w io.Writer, r io.Reader) error {
 			}
 			return errs.Wrap(err, "")
 		}
-		fmt.Fprintf(out, "%s0x%02x", sep, b)
+		fmt.Fprintf(w, "%s0x%02x", sep, b)
 		sep = ", "
-	}
-	fmt.Fprintln(out)
-	err := out.Flush()
-	if err != nil {
-		return errs.Wrap(err, "")
 	}
 	return nil
 }
@@ -46,19 +40,13 @@ func UnicodePoint(w io.Writer, r io.Reader) error {
 	}
 
 	sep := ""
-	out := bufio.NewWriter(w)
 	for _, rn := range buf.String() {
 		if (rn & 0x7fff0000) == 0 {
-			fmt.Fprintf(out, "%s0x%04x", sep, rn)
+			fmt.Fprintf(w, "%s0x%04x", sep, rn)
 		} else {
-			fmt.Fprintf(out, "%s0x%08x", sep, rn)
+			fmt.Fprintf(w, "%s0x%08x", sep, rn)
 		}
 		sep = ", "
-	}
-	fmt.Fprintln(out)
-	err := out.Flush()
-	if err != nil {
-		return errs.Wrap(err, "")
 	}
 	return nil
 }
