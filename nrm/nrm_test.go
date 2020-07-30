@@ -57,7 +57,7 @@ func TestNormalize(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		buf := &bytes.Buffer{}
-		if err := Normalize(tc.formName, buf, bytes.NewReader(tc.inp)); err != nil {
+		if err := Normalize(tc.formName, buf, bytes.NewReader(tc.inp), false); err != nil {
 			if !errs.Is(err, tc.err) {
 				t.Errorf("Normalize() error = \"%+v\", want \"%+v\".", err, tc.err)
 			}
@@ -71,22 +71,43 @@ func TestNormalize(t *testing.T) {
 func TestNormKangxiRadicals(t *testing.T) {
 	testCases := []struct {
 		inp, out []byte
+		formName string
 		err      error
 	}{
 		{
-			inp: []byte("埼⽟"), //U+57FC, U+2F5F
-			out: []byte("埼玉"), //U+57FC, U+7389
-			err: nil,
+			inp:      []byte("㈱埼⽟"), //U+3231, U+57FC, U+2F5F
+			out:      []byte("㈱埼⽟"), //U+3231, U+57FC, U+2F5F (not translate)
+			formName: "nfc",
+			err:      nil,
 		},
 		{
-			inp: []byte{0x82, 0xb1, 0x82, 0xf1, 0x82, 0xc9, 0x82, 0xbf, 0x82, 0xcd, 0x81, 0x43, 0x90, 0xa2, 0x8a, 0x45, 0x81, 0x49}, //"こんにちは，世界！" by Shift_JIS encoding
-			out: []byte{},
-			err: ecode.ErrInvalidUTF8Text,
+			inp:      []byte("㈱埼⽟"), //U+3231, U+57FC, U+2F5F
+			out:      []byte("㈱埼⽟"), //U+3231, U+57FC, U+2F5F (not translate)
+			formName: "nfd",
+			err:      nil,
+		},
+		{
+			inp:      []byte("㈱埼⽟"), //U+3231, U+57FC, U+2F5F
+			out:      []byte("㈱埼玉"), //U+3231, U+57FC, U+7389
+			formName: "nfkc",
+			err:      nil,
+		},
+		{
+			inp:      []byte("㈱埼⽟"), //U+3231, U+57FC, U+2F5F
+			out:      []byte("㈱埼玉"), //U+3231, U+57FC, U+7389
+			formName: "nfkd",
+			err:      nil,
+		},
+		{
+			inp:      []byte{0x82, 0xb1, 0x82, 0xf1, 0x82, 0xc9, 0x82, 0xbf, 0x82, 0xcd, 0x81, 0x43, 0x90, 0xa2, 0x8a, 0x45, 0x81, 0x49}, //"こんにちは，世界！" by Shift_JIS encoding
+			out:      []byte{},
+			formName: "nfkc",
+			err:      ecode.ErrInvalidUTF8Text,
 		},
 	}
 	for _, tc := range testCases {
 		buf := &bytes.Buffer{}
-		if err := NormKangxiRadicals(buf, bytes.NewReader(tc.inp)); err != nil {
+		if err := Normalize(tc.formName, buf, bytes.NewReader(tc.inp), true); err != nil {
 			if !errs.Is(err, tc.err) {
 				t.Errorf("NormKangxiRadicals() error = \"%+v\", want \"%+v\".", err, tc.err)
 			}

@@ -11,7 +11,7 @@ import (
 
 func ExampleTranslate() {
 	buf := &bytes.Buffer{}
-	nrm.Normalize("nfkc", buf, strings.NewReader("ﾍﾟﾝｷﾞﾝ"))
+	nrm.Normalize("nfkc", buf, strings.NewReader("ﾍﾟﾝｷﾞﾝ"), false)
 	dump.UnicodePoint(os.Stdout, buf)
 	//Output:
 	//0x30da, 0x30f3, 0x30ae, 0x30f3

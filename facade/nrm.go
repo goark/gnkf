@@ -60,11 +60,7 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 			}
 
 			//Run command
-			if krFlag {
-				if err := nrm.NormKangxiRadicals(w, r); err != nil {
-					return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp), errs.WithContext("output", out)))
-				}
-			} else if err := nrm.Normalize(form, w, r); err != nil {
+			if err := nrm.Normalize(form, w, r, krFlag); err != nil {
 				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp), errs.WithContext("output", out)))
 			}
 			return nil
@@ -73,7 +69,7 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 	normCmd.Flags().StringP("file", "f", "", "path of input text file")
 	normCmd.Flags().StringP("output", "o", "", "path of output file")
 	normCmd.Flags().StringP("norm-form", "n", "nfc", fmt.Sprintf("Unicode normalization form: [%s]", strings.Join(nrm.FormList(), "|")))
-	normCmd.Flags().BoolP("kangxi-radicals", "k", false, "normalize kangxi radicals only")
+	normCmd.Flags().BoolP("kangxi-radicals", "k", false, "normalize kangxi radicals only (with nfkc or nfkd form)")
 
 	return normCmd
 }
