@@ -32,9 +32,9 @@ func TranslateString(formName, txt string) (string, error) {
 		return "", errs.WrapWithCause(err, nil, errs.WithContext("formName", formName))
 	}
 	if f == wdth.Narrow {
-		return f.String(newReplaceerkanaNFD().Replace(txt)), nil
+		return f.String(NewReplaceerkanaNFD().Replace(txt)), nil
 	}
-	return newReplaceerkanaNFC().Replace(f.String(txt)), nil
+	return NewReplaceerkanaNFC().Replace(f.String(txt)), nil
 }
 
 /* Copyright 2020 Spiegel

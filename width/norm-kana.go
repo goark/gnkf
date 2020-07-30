@@ -35,7 +35,8 @@ var normKatakanaMap = map[string]string{
 	string([]rune{'ヺ'}): string([]rune{'ヲ', 0x3099}),
 }
 
-func newReplaceerkanaNFC() *strings.Replacer {
+//NewReplaceerkanaNFC returns strings.Replacer instance for NFC translation of katakana
+func NewReplaceerkanaNFC() *strings.Replacer {
 	ss := []string{}
 	for k, v := range normKatakanaMap {
 		ss = append(ss, v, k)
@@ -43,7 +44,8 @@ func newReplaceerkanaNFC() *strings.Replacer {
 	return strings.NewReplacer(ss...)
 }
 
-func newReplaceerkanaNFD() *strings.Replacer {
+//NewReplaceerkanaNFD returns strings.Replacer instance for NFD translation of katakana
+func NewReplaceerkanaNFD() *strings.Replacer {
 	ss := []string{}
 	for k, v := range normKatakanaMap {
 		ss = append(ss, k, v)
