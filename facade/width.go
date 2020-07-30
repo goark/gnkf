@@ -7,17 +7,17 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/nrm"
+	"github.com/spiegel-im-spiegel/gnkf/width"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
 //newNormCmd returns cobra.Command instance for show sub-command
-func newNormCmd(ui *rwi.RWI) *cobra.Command {
-	normCmd := &cobra.Command{
-		Use:     "norm",
-		Aliases: []string{"normalize", "nrm", "nm"},
-		Short:   "Unicode normalization",
-		Long:    "Unicode normalization (UTF-8 encoding only)",
+func newWidthCmd(ui *rwi.RWI) *cobra.Command {
+	widthCmd := &cobra.Command{
+		Use:     "width",
+		Aliases: []string{"wdth", "w"},
+		Short:   "Translate character width in text",
+		Long:    "Translate character width in text (UTF-8 encoding only).",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//Options
 			inp, err := cmd.Flags().GetString("file")
@@ -28,13 +28,9 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 			if err != nil {
 				return debugPrint(ui, errs.Wrap(err, "Error in --output option"))
 			}
-			form, err := cmd.Flags().GetString("norm-form")
+			form, err := cmd.Flags().GetString("width-form")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --norm-form option"))
-			}
-			krFlag, err := cmd.Flags().GetBool("kangxi-radicals")
-			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --kangxi-radicals option"))
+				return debugPrint(ui, errs.Wrap(err, "Error in --width-form option"))
 			}
 
 			//Input stream
@@ -60,18 +56,17 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 			}
 
 			//Run command
-			if err := nrm.Normalize(form, w, r, krFlag); err != nil {
+			if err := width.Translate(form, w, r); err != nil {
 				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp), errs.WithContext("output", out)))
 			}
 			return nil
 		},
 	}
-	normCmd.Flags().StringP("file", "f", "", "path of input text file")
-	normCmd.Flags().StringP("output", "o", "", "path of output file")
-	normCmd.Flags().StringP("norm-form", "n", "nfc", fmt.Sprintf("Unicode normalization form: [%s]", strings.Join(nrm.FormList(), "|")))
-	normCmd.Flags().BoolP("kangxi-radicals", "k", false, "normalize kangxi radicals only (with nfkc or nfkd form)")
+	widthCmd.Flags().StringP("file", "f", "", "path of input text file")
+	widthCmd.Flags().StringP("output", "o", "", "path of output file")
+	widthCmd.Flags().StringP("width-form", "w", "fold", fmt.Sprintf("width form: [%s]", strings.Join(width.FormList(), "|")))
 
-	return normCmd
+	return widthCmd
 }
 
 /* Copyright 2020 Spiegel

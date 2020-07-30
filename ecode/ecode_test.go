@@ -20,7 +20,8 @@ func TestECodeError(t *testing.T) {
 		{err: ErrInvalidEncoding, str: "Text is invalid encoding"},
 		{err: ErrInvalidNormForm, str: "Invalid Unicode normalization form"},
 		{err: ErrInvalidNewlineForm, str: "Invalid newline form"},
-		{err: ECode(10), str: "unknown error (10)"},
+		{err: ErrInvalidWidthForm, str: "Invalid width form"},
+		{err: ECode(11), str: "unknown error (11)"},
 	}
 
 	for _, tc := range testCases {
