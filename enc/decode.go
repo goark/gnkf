@@ -9,9 +9,9 @@ import (
 	"golang.org/x/text/encoding/unicode"
 )
 
-//Decode translates from UTF-8 encodeing text.
+//Decode converts from UTF-8 encodeing text.
 func Decode(writer io.Writer, ianaName string, txt io.Reader) error {
-	decoder, err := GetEncoding(ianaName)
+	decoder, err := Encoding(ianaName)
 	if err != nil {
 		return errs.WrapWithCause(err, nil, errs.WithContext("ianaName", ianaName))
 	}
@@ -20,7 +20,7 @@ func Decode(writer io.Writer, ianaName string, txt io.Reader) error {
 
 func decode(decoder encoding.Encoding, writer io.Writer, txt io.Reader) error {
 	if decoder == unicode.UTF8 {
-		return notTranslate(writer, txt)
+		return notConvert(writer, txt)
 	}
 	if _, err := io.Copy(writer, decoder.NewDecoder().Reader(txt)); err != nil {
 		return errs.WrapWithCause(ecode.ErrInvalidEncoding, err)

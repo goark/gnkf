@@ -16,8 +16,8 @@ func newGuessCmd(ui *rwi.RWI) *cobra.Command {
 	guessCmd := &cobra.Command{
 		Use:     "guess",
 		Aliases: []string{"g"},
-		Short:   "Guess character encoding of text",
-		Long:    "Guess character encoding of text",
+		Short:   "Guess character encoding of the text",
+		Long:    "Guess character encoding of the text",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//Options
 			path, err := cmd.Flags().GetString("file")

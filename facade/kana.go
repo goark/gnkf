@@ -1,28 +1,27 @@
 package facade
 
 import (
-	"bytes"
-	"io"
+	"fmt"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/enc"
-	"github.com/spiegel-im-spiegel/gnkf/guess"
+	"github.com/spiegel-im-spiegel/gnkf/kana"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
-var descriptionEnc = `Convert character encoding of the text.
- Using MIME and IANA name as the character encoding name.
- Refer: http://www.iana.org/assignments/character-sets/character-sets.xhtml`
+var descriptionKana = `Convert kana characters in the text.
+ UTF-8 encoding only.
+ "hiragana" and "katakana" forms are valid only for full-width kana character.`
 
-//newEncCmd returns cobra.Command instance for show sub-command
-func newEncCmd(ui *rwi.RWI) *cobra.Command {
-	encCmd := &cobra.Command{
-		Use:     "enc",
-		Aliases: []string{"encoding", "e"},
-		Short:   "Convert character encoding of the text",
-		Long:    descriptionEnc,
+//newNormCmd returns cobra.Command instance for show sub-command
+func newKanaCmd(ui *rwi.RWI) *cobra.Command {
+	kanaCmd := &cobra.Command{
+		Use:     "kana",
+		Aliases: []string{"k"},
+		Short:   "Convert kana characters in the text",
+		Long:    descriptionKana,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//Options
 			inp, err := cmd.Flags().GetString("file")
@@ -33,17 +32,13 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 			if err != nil {
 				return debugPrint(ui, errs.Wrap(err, "Error in --output option"))
 			}
-			from, err := cmd.Flags().GetString("src-encoding")
+			form, err := cmd.Flags().GetString("conversion-form")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --src-encoding option"))
+				return debugPrint(ui, errs.Wrap(err, "Error in --conversion-form option"))
 			}
-			to, err := cmd.Flags().GetString("dst-encoding")
+			foldFlag, err := cmd.Flags().GetBool("fold")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --dst-encoding option"))
-			}
-			flagGuess, err := cmd.Flags().GetBool("guess")
-			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --guess option"))
+				return debugPrint(ui, errs.Wrap(err, "Error in --fold option"))
 			}
 
 			//Input stream
@@ -55,17 +50,6 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 				}
 				defer file.Close()
 				r = file
-			}
-			if flagGuess {
-				dup := &bytes.Buffer{}
-				ss, err := guess.Encoding(io.TeeReader(r, dup))
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, "error in guess text", errs.WithContext("file", inp)))
-				}
-				if len(ss) > 0 {
-					from = ss[0]
-				}
-				r = dup
 			}
 
 			//Output stream
@@ -80,19 +64,18 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 			}
 
 			//Run command
-			if err := enc.Convert(to, w, from, r); err != nil {
+			if err := kana.Convert(form, w, r, foldFlag); err != nil {
 				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp), errs.WithContext("output", out)))
 			}
 			return nil
 		},
 	}
-	encCmd.Flags().StringP("file", "f", "", "path of input text file")
-	encCmd.Flags().StringP("output", "o", "", "path of output file")
-	encCmd.Flags().StringP("src-encoding", "s", "utf-8", "character encoding name of source text")
-	encCmd.Flags().StringP("dst-encoding", "d", "utf-8", "character encoding name of output text")
-	encCmd.Flags().BoolP("guess", "g", false, "guess character encoding of source text")
+	kanaCmd.Flags().StringP("file", "f", "", "path of input text file")
+	kanaCmd.Flags().StringP("output", "o", "", "path of output file")
+	kanaCmd.Flags().StringP("conversion-form", "t", "katakana", fmt.Sprintf("conversion form: [%s]", strings.Join(kana.FormList(), "|")))
+	kanaCmd.Flags().BoolP("fold", "", false, "convert character width by fold form")
 
-	return encCmd
+	return kanaCmd
 }
 
 /* Copyright 2020 Spiegel

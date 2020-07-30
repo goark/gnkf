@@ -9,24 +9,21 @@ import (
 	"github.com/spiegel-im-spiegel/gnkf/width"
 )
 
-var text = `こんにちは
-世界！`
-
 func ExampleTranslateString() {
 	txt := "12345 コンバンハ、セカイ ６７８９０ ｺﾝﾊﾞﾝﾊ､ﾆｯﾎﾟﾝ"
-	str, err := width.TranslateString("narrow", txt)
+	str, err := width.ConvertString("narrow", txt)
 	if err != nil {
 		return
 	}
 	dump.UnicodePoint(os.Stdout, bytes.NewBufferString(str))
 	fmt.Println()
-	str, err = width.TranslateString("widen", txt)
+	str, err = width.ConvertString("widen", txt)
 	if err != nil {
 		return
 	}
 	dump.UnicodePoint(os.Stdout, bytes.NewBufferString(str))
 	fmt.Println()
-	str, err = width.TranslateString("fold", txt)
+	str, err = width.ConvertString("fold", txt)
 	if err != nil {
 		return
 	}

@@ -1,4 +1,4 @@
-package width
+package kana
 
 import (
 	"bytes"
@@ -6,16 +6,16 @@ import (
 	"strings"
 
 	"github.com/spiegel-im-spiegel/errs"
-	wdth "golang.org/x/text/width"
+	"github.com/spiegel-im-spiegel/gnkf/width"
 )
 
-//Convert function converts character width in text stream.
-func Convert(formName string, writer io.Writer, txt io.Reader) error {
+//Convert function converts kana character in text stream.
+func Convert(formName string, writer io.Writer, txt io.Reader, foldFlag bool) error {
 	buf := &bytes.Buffer{}
 	if _, err := buf.ReadFrom(txt); err != nil {
 		return errs.WrapWithCause(err, nil)
 	}
-	str, err := ConvertString(formName, buf.String())
+	str, err := ConvertString(formName, buf.String(), foldFlag)
 	if err != nil {
 		return errs.WrapWithCause(err, nil)
 	}
@@ -25,16 +25,29 @@ func Convert(formName string, writer io.Writer, txt io.Reader) error {
 	return nil
 }
 
-//ConvertString function converts character width in text string.
-func ConvertString(formName, txt string) (string, error) {
+//ConvertString function converts kana character in text string.
+func ConvertString(formName string, txt string, foldFlag bool) (string, error) {
 	f, err := FormOf(formName)
 	if err != nil {
 		return "", errs.WrapWithCause(err, nil, errs.WithContext("formName", formName))
 	}
-	if f == wdth.Narrow {
-		return NewReplaceerHalfWidthkana().Replace(f.String(NewReplaceerkanaNFD().Replace(txt))), nil
+	if foldFlag {
+		s, err := width.ConvertString("fold", txt)
+		if err != nil {
+			return "", errs.WrapWithCause(err, nil, errs.WithContext("formName", formName))
+		}
+		txt = s
 	}
-	return NewReplaceerkanaNFC().Replace(f.String(txt)), nil
+	switch f {
+	case Hiragana:
+		return ReplaceHiragana(txt), nil
+	case Katakana:
+		return ReplaceKatakana(txt), nil
+	case Chokuon:
+		return ReplaceChokuon(txt), nil
+	default:
+		return txt, nil
+	}
 }
 
 /* Copyright 2020 Spiegel

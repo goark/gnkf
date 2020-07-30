@@ -14,7 +14,7 @@ var text = `こんにちは
 
 func ExampleTranslate() {
 	buf := &bytes.Buffer{}
-	newline.Translate("crlf", buf, strings.NewReader(text))
+	newline.Convert("crlf", buf, strings.NewReader(text))
 	dump.UnicodePoint(os.Stdout, buf)
 	//Output:
 	//0x3053, 0x3093, 0x306b, 0x3061, 0x306f, 0x000d, 0x000a, 0x4e16, 0x754c, 0xff01

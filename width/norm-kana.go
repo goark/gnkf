@@ -54,8 +54,11 @@ func NewReplaceerkanaNFD() *strings.Replacer {
 }
 
 var normKatakanaMap2 = map[string]string{
+	string([]rune{'ヮ'}): string([]rune{'ﾜ'}),
 	string([]rune{'ヰ'}): string([]rune{'ｲ'}),
 	string([]rune{'ヱ'}): string([]rune{'ｴ'}),
+	string([]rune{'ヵ'}): string([]rune{'ｶ'}),
+	string([]rune{'ヶ'}): string([]rune{'ｹ'}),
 }
 
 //NewReplaceerHalfWidthkana returns strings.Replacer instance for complement half-width katakana

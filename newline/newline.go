@@ -7,7 +7,8 @@ import (
 	"github.com/spiegel-im-spiegel/errs"
 )
 
-func Translate(formName string, writer io.Writer, txt io.Reader) error {
+//Convert function convert newline in the text stream.
+func Convert(formName string, writer io.Writer, txt io.Reader) error {
 	f, err := FormOf(formName)
 	if err != nil {
 		return errs.WrapWithCause(err, nil, errs.WithContext("formName", formName))

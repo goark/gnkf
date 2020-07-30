@@ -16,8 +16,8 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 	normCmd := &cobra.Command{
 		Use:     "norm",
 		Aliases: []string{"normalize", "nrm", "nm"},
-		Short:   "Unicode normalization",
-		Long:    "Unicode normalization (UTF-8 encoding only)",
+		Short:   "Unicode normalization of the text",
+		Long:    "Unicode normalization of the text (UTF-8 encoding only).",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//Options
 			inp, err := cmd.Flags().GetString("file")

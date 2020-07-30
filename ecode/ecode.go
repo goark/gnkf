@@ -16,6 +16,7 @@ const (
 	ErrInvalidNormForm
 	ErrInvalidNewlineForm
 	ErrInvalidWidthForm
+	ErrInvalidKanaForm
 )
 
 var errMessages = map[ECode]string{
@@ -29,6 +30,7 @@ var errMessages = map[ECode]string{
 	ErrInvalidNormForm:    "Invalid Unicode normalization form",
 	ErrInvalidNewlineForm: "Invalid newline form",
 	ErrInvalidWidthForm:   "Invalid width form",
+	ErrInvalidKanaForm:    "Invalid kana form",
 }
 
 func (e ECode) Error() string {

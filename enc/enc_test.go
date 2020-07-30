@@ -83,7 +83,7 @@ func TestTranslate(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		buf := &bytes.Buffer{}
-		if err := Translate(tc.to, buf, tc.from, bytes.NewReader(tc.inp)); err != nil {
+		if err := Convert(tc.to, buf, tc.from, bytes.NewReader(tc.inp)); err != nil {
 			if !errs.Is(err, tc.err) {
 				t.Errorf("Encode() error = \"%+v\", want \"%+v\".", err, tc.err)
 			}

@@ -16,8 +16,8 @@ func newNwlnCmd(ui *rwi.RWI) *cobra.Command {
 	nwlnCmd := &cobra.Command{
 		Use:     "newline",
 		Aliases: []string{"nwln", "nl"},
-		Short:   "Translate newline form",
-		Long:    "Translate newline form",
+		Short:   "Convert newline form in the text",
+		Long:    "Convert newline form in the text.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//Options
 			inp, err := cmd.Flags().GetString("file")
@@ -56,7 +56,7 @@ func newNwlnCmd(ui *rwi.RWI) *cobra.Command {
 			}
 
 			//Run command
-			if err := newline.Translate(form, w, r); err != nil {
+			if err := newline.Convert(form, w, r); err != nil {
 				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp), errs.WithContext("output", out)))
 			}
 			return nil

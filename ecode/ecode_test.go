@@ -21,7 +21,8 @@ func TestECodeError(t *testing.T) {
 		{err: ErrInvalidNormForm, str: "Invalid Unicode normalization form"},
 		{err: ErrInvalidNewlineForm, str: "Invalid newline form"},
 		{err: ErrInvalidWidthForm, str: "Invalid width form"},
-		{err: ECode(11), str: "unknown error (11)"},
+		{err: ErrInvalidKanaForm, str: "Invalid kana form"},
+		{err: ECode(12), str: "unknown error (12)"},
 	}
 
 	for _, tc := range testCases {

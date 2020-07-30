@@ -16,8 +16,8 @@ func newWidthCmd(ui *rwi.RWI) *cobra.Command {
 	widthCmd := &cobra.Command{
 		Use:     "width",
 		Aliases: []string{"wdth", "w"},
-		Short:   "Translate character width in text",
-		Long:    "Translate character width in text (UTF-8 encoding only).",
+		Short:   "Convert character width in the text",
+		Long:    "Convert character width in the text (UTF-8 encoding only).",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//Options
 			inp, err := cmd.Flags().GetString("file")
@@ -28,9 +28,9 @@ func newWidthCmd(ui *rwi.RWI) *cobra.Command {
 			if err != nil {
 				return debugPrint(ui, errs.Wrap(err, "Error in --output option"))
 			}
-			form, err := cmd.Flags().GetString("width-form")
+			form, err := cmd.Flags().GetString("translate-form")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --width-form option"))
+				return debugPrint(ui, errs.Wrap(err, "Error in --conversion-form option"))
 			}
 
 			//Input stream
@@ -56,7 +56,7 @@ func newWidthCmd(ui *rwi.RWI) *cobra.Command {
 			}
 
 			//Run command
-			if err := width.Translate(form, w, r); err != nil {
+			if err := width.Convert(form, w, r); err != nil {
 				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp), errs.WithContext("output", out)))
 			}
 			return nil
@@ -64,7 +64,7 @@ func newWidthCmd(ui *rwi.RWI) *cobra.Command {
 	}
 	widthCmd.Flags().StringP("file", "f", "", "path of input text file")
 	widthCmd.Flags().StringP("output", "o", "", "path of output file")
-	widthCmd.Flags().StringP("width-form", "w", "fold", fmt.Sprintf("width form: [%s]", strings.Join(width.FormList(), "|")))
+	widthCmd.Flags().StringP("conversion-form", "t", "fold", fmt.Sprintf("conversion form: [%s]", strings.Join(width.FormList(), "|")))
 
 	return widthCmd
 }

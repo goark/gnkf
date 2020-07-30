@@ -52,7 +52,7 @@ func TestTranslate(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		buf := &bytes.Buffer{}
-		if err := Translate(tc.formName, buf, bytes.NewReader(tc.inp)); err != nil {
+		if err := Convert(tc.formName, buf, bytes.NewReader(tc.inp)); err != nil {
 			if !errs.Is(err, tc.err) {
 				t.Errorf("Translate() error = \"%+v\", want \"%+v\".", err, tc.err)
 			}

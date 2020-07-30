@@ -9,12 +9,13 @@ import (
 	"golang.org/x/text/encoding/unicode"
 )
 
-func Translate(toIanaName string, writer io.Writer, fromIanaName string, txt io.Reader) error {
-	encoder, err := GetEncoding(toIanaName)
+//Convert function converts character encoding text stream.
+func Convert(toIanaName string, writer io.Writer, fromIanaName string, txt io.Reader) error {
+	encoder, err := Encoding(toIanaName)
 	if err != nil {
 		return errs.WrapWithCause(err, nil, errs.WithContext("toIanaName", toIanaName))
 	}
-	decoder, err := GetEncoding(fromIanaName)
+	decoder, err := Encoding(fromIanaName)
 	if err != nil {
 		return errs.WrapWithCause(err, nil, errs.WithContext("fromIanaName", fromIanaName))
 	}
@@ -24,12 +25,12 @@ func Translate(toIanaName string, writer io.Writer, fromIanaName string, txt io.
 	if decoder == unicode.UTF8 {
 		return encode(encoder, writer, txt)
 	}
-	return translate(encoder, decoder, writer, txt)
+	return convert(encoder, decoder, writer, txt)
 }
 
-func translate(encoder, decoder encoding.Encoding, writer io.Writer, txt io.Reader) error {
+func convert(encoder, decoder encoding.Encoding, writer io.Writer, txt io.Reader) error {
 	if encoder == decoder {
-		return notTranslate(writer, txt)
+		return notConvert(writer, txt)
 	}
 	if _, err := io.Copy(encoder.NewEncoder().Writer(writer), decoder.NewDecoder().Reader(txt)); err != nil {
 		return errs.WrapWithCause(ecode.ErrInvalidEncoding, err)
@@ -37,7 +38,7 @@ func translate(encoder, decoder encoding.Encoding, writer io.Writer, txt io.Read
 	return nil
 }
 
-func notTranslate(writer io.Writer, txt io.Reader) error {
+func notConvert(writer io.Writer, txt io.Reader) error {
 	if _, err := io.Copy(writer, txt); err != nil {
 		return errs.WrapWithCause(err, nil)
 	}

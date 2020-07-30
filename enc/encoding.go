@@ -7,8 +7,8 @@ import (
 	"golang.org/x/text/encoding/ianaindex"
 )
 
-//GetEncoding returns encoding.Encoding instance from IANA name
-func GetEncoding(ianaName string) (encoding.Encoding, error) {
+//GetEncoding returns encoding.Encoding instance from MIME or IANA name
+func Encoding(ianaName string) (encoding.Encoding, error) {
 	e, err := ianaindex.IANA.Encoding(ianaName)
 	if err != nil {
 		e, err = ianaindex.MIME.Encoding(ianaName)
