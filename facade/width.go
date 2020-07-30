@@ -28,7 +28,7 @@ func newWidthCmd(ui *rwi.RWI) *cobra.Command {
 			if err != nil {
 				return debugPrint(ui, errs.Wrap(err, "Error in --output option"))
 			}
-			form, err := cmd.Flags().GetString("translate-form")
+			form, err := cmd.Flags().GetString("conversion-form")
 			if err != nil {
 				return debugPrint(ui, errs.Wrap(err, "Error in --conversion-form option"))
 			}
@@ -64,7 +64,7 @@ func newWidthCmd(ui *rwi.RWI) *cobra.Command {
 	}
 	widthCmd.Flags().StringP("file", "f", "", "path of input text file")
 	widthCmd.Flags().StringP("output", "o", "", "path of output file")
-	widthCmd.Flags().StringP("conversion-form", "t", "fold", fmt.Sprintf("conversion form: [%s]", strings.Join(width.FormList(), "|")))
+	widthCmd.Flags().StringP("conversion-form", "c", "fold", fmt.Sprintf("conversion form: [%s]", strings.Join(width.FormList(), "|")))
 
 	return widthCmd
 }

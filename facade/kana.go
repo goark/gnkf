@@ -72,7 +72,7 @@ func newKanaCmd(ui *rwi.RWI) *cobra.Command {
 	}
 	kanaCmd.Flags().StringP("file", "f", "", "path of input text file")
 	kanaCmd.Flags().StringP("output", "o", "", "path of output file")
-	kanaCmd.Flags().StringP("conversion-form", "t", "katakana", fmt.Sprintf("conversion form: [%s]", strings.Join(kana.FormList(), "|")))
+	kanaCmd.Flags().StringP("conversion-form", "c", "katakana", fmt.Sprintf("conversion form: [%s]", strings.Join(kana.FormList(), "|")))
 	kanaCmd.Flags().BoolP("fold", "", false, "convert character width by fold form")
 
 	return kanaCmd

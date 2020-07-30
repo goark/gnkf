@@ -7,5 +7,5 @@ require (
 	github.com/spf13/cobra v1.0.0
 	github.com/spiegel-im-spiegel/errs v0.6.0
 	github.com/spiegel-im-spiegel/gocli v0.10.1
-	golang.org/x/text v0.3.0
+	golang.org/x/text v0.3.3
 )
