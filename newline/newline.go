@@ -1,20 +1,26 @@
-package nrm_test
+package newline
 
 import (
 	"bytes"
-	"os"
-	"strings"
+	"io"
 
-	"github.com/spiegel-im-spiegel/gnkf/dump"
-	"github.com/spiegel-im-spiegel/gnkf/nrm"
+	"github.com/spiegel-im-spiegel/errs"
 )
 
-func ExampleNormalize() {
+func Translate(formName string, writer io.Writer, txt io.Reader) error {
+	f, err := FormOf(formName)
+	if err != nil {
+		return errs.WrapWithCause(err, nil, errs.WithContext("formName", formName))
+	}
+
 	buf := &bytes.Buffer{}
-	nrm.Normalize("nfkc", buf, strings.NewReader("ﾍﾟﾝｷﾞﾝ"), false)
-	dump.UnicodePoint(os.Stdout, buf)
-	//Output:
-	//0x30da, 0x30f3, 0x30ae, 0x30f3
+	if _, err := buf.ReadFrom(txt); err != nil {
+		return errs.WrapWithCause(err, nil)
+	}
+	if _, err := NewReplacer(f).WriteString(writer, buf.String()); err != nil {
+		return errs.WrapWithCause(err, nil)
+	}
+	return nil
 }
 
 /* Copyright 2020 Spiegel

@@ -7,17 +7,17 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/nrm"
+	"github.com/spiegel-im-spiegel/gnkf/newline"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
 //newNormCmd returns cobra.Command instance for show sub-command
-func newNormCmd(ui *rwi.RWI) *cobra.Command {
-	normCmd := &cobra.Command{
-		Use:     "norm",
-		Aliases: []string{"normalize", "nrm"},
-		Short:   "Unicode normalization",
-		Long:    "Unicode normalization (UTF-8 text only)",
+func newNwlnCmd(ui *rwi.RWI) *cobra.Command {
+	nwlnCmd := &cobra.Command{
+		Use:     "newline",
+		Aliases: []string{"nwln", "nl"},
+		Short:   "Translate newline form",
+		Long:    "Translate newline form",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//Options
 			inp, err := cmd.Flags().GetString("file")
@@ -28,13 +28,9 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 			if err != nil {
 				return debugPrint(ui, errs.Wrap(err, "Error in --output option"))
 			}
-			form, err := cmd.Flags().GetString("norm-form")
+			form, err := cmd.Flags().GetString("newline-form")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --norm-form option"))
-			}
-			krFlag, err := cmd.Flags().GetBool("kangxi-radicals")
-			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --kangxi-radicals option"))
+				return debugPrint(ui, errs.Wrap(err, "Error in --newline-form option"))
 			}
 
 			//Input stream
@@ -60,18 +56,17 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 			}
 
 			//Run command
-			if err := nrm.Normalize(form, w, r, krFlag); err != nil {
+			if err := newline.Translate(form, w, r); err != nil {
 				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp), errs.WithContext("output", out)))
 			}
 			return nil
 		},
 	}
-	normCmd.Flags().StringP("file", "f", "", "path of input text file")
-	normCmd.Flags().StringP("output", "o", "", "path of output file")
-	normCmd.Flags().StringP("norm-form", "n", "nfc", fmt.Sprintf("Unicode normalization form: [%s]", strings.Join(nrm.FormList(), "|")))
-	normCmd.Flags().BoolP("kangxi-radicals", "k", false, "normalize kangxi radicals only (with nfkc or nfkd form)")
+	nwlnCmd.Flags().StringP("file", "f", "", "path of input text file")
+	nwlnCmd.Flags().StringP("output", "o", "", "path of output file")
+	nwlnCmd.Flags().StringP("newline-form", "n", "lf", fmt.Sprintf("newline form: [%s]", strings.Join(newline.FormList(), "|")))
 
-	return normCmd
+	return nwlnCmd
 }
 
 /* Copyright 2020 Spiegel

@@ -18,8 +18,8 @@ var (
 func newVersionCmd(ui *rwi.RWI) *cobra.Command {
 	versionCmd := &cobra.Command{
 		Use:   "version",
-		Short: "print the version number",
-		Long:  "print the version number of " + Name,
+		Short: "Print the version number",
+		Long:  "Print the version number of " + Name,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return ui.OutputErrln(strings.Join(usage, "\n"))
 		},

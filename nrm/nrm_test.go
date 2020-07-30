@@ -12,9 +12,10 @@ import (
 )
 
 func TestFormList(t *testing.T) {
+	res := "nfc|nfd|nfkc|nfkd"
 	str := strings.Join(FormList(), "|")
-	if str != "nfc|nfd|nfkc|nfkd" {
-		t.Errorf("FormList() = \"%+v\", want \"%+v\".", str, "nfc|nfd|nfkc|nfkd")
+	if str != res {
+		t.Errorf("FormList() = \"%+v\", want \"%+v\".", str, res)
 	}
 }
 

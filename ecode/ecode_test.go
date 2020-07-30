@@ -19,7 +19,8 @@ func TestECodeError(t *testing.T) {
 		{err: ErrNotSuppotEncoding, str: "Not Support IANA encoding name"},
 		{err: ErrInvalidEncoding, str: "Text is invalid encoding"},
 		{err: ErrInvalidNormForm, str: "Invalid Unicode normalization form"},
-		{err: ECode(9), str: "unknown error (9)"},
+		{err: ErrInvalidNewlineForm, str: "Invalid newline form"},
+		{err: ECode(10), str: "unknown error (10)"},
 	}
 
 	for _, tc := range testCases {

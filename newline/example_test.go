@@ -1,4 +1,4 @@
-package nrm_test
+package newline_test
 
 import (
 	"bytes"
@@ -6,15 +6,18 @@ import (
 	"strings"
 
 	"github.com/spiegel-im-spiegel/gnkf/dump"
-	"github.com/spiegel-im-spiegel/gnkf/nrm"
+	"github.com/spiegel-im-spiegel/gnkf/newline"
 )
 
-func ExampleNormalize() {
+var text = `こんにちは
+世界！`
+
+func ExampleTranslate() {
 	buf := &bytes.Buffer{}
-	nrm.Normalize("nfkc", buf, strings.NewReader("ﾍﾟﾝｷﾞﾝ"), false)
+	newline.Translate("crlf", buf, strings.NewReader(text))
 	dump.UnicodePoint(os.Stdout, buf)
 	//Output:
-	//0x30da, 0x30f3, 0x30ae, 0x30f3
+	//0x3053, 0x3093, 0x306b, 0x3061, 0x306f, 0x000d, 0x000a, 0x4e16, 0x754c, 0xff01
 }
 
 /* Copyright 2020 Spiegel

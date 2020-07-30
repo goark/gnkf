@@ -11,7 +11,7 @@ import (
 	"github.com/spiegel-im-spiegel/gnkf/ecode"
 )
 
-//Octet output io.Writer hex-dump of byte stream
+//Octet output io.Writer hex-dump of byte stream.
 func Octet(w io.Writer, r io.Reader) error {
 	sep := ""
 	inp := bufio.NewReader(r)
@@ -21,7 +21,7 @@ func Octet(w io.Writer, r io.Reader) error {
 			if errs.Is(err, io.EOF) {
 				break
 			}
-			return errs.Wrap(err, "")
+			return errs.WrapWithCause(err, nil)
 		}
 		fmt.Fprintf(w, "%s0x%02x", sep, b)
 		sep = ", "
@@ -29,7 +29,16 @@ func Octet(w io.Writer, r io.Reader) error {
 	return nil
 }
 
-//UnicodePoint output io.Writer hex-dump of Unicode code point (input text is UTF-8 only)
+//OctetString output hex-dump string.
+func OctetString(r io.Reader) string {
+	buf := &bytes.Buffer{}
+	if err := Octet(buf, r); err != nil {
+		return ""
+	}
+	return buf.String()
+}
+
+//UnicodePoint output io.Writer hex-dump of Unicode code point (input text is UTF-8 only).
 func UnicodePoint(w io.Writer, r io.Reader) error {
 	buf := &bytes.Buffer{}
 	if _, err := buf.ReadFrom(r); err != nil {
@@ -49,6 +58,15 @@ func UnicodePoint(w io.Writer, r io.Reader) error {
 		sep = ", "
 	}
 	return nil
+}
+
+//UnicodePointString output hex-dump string of Unicode code point (input text is UTF-8 only).
+func UnicodePointString(r io.Reader) string {
+	buf := &bytes.Buffer{}
+	if err := UnicodePoint(buf, r); err != nil {
+		return ""
+	}
+	return buf.String()
 }
 
 /* Copyright 2020 Spiegel

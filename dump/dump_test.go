@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gnkf/ecode"
 )
 
@@ -28,13 +27,9 @@ func TestOctet(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		out := new(bytes.Buffer)
-		err := Octet(out, bytes.NewReader(tc.text))
-		if !errs.Is(err, tc.err) {
-			t.Errorf("Octet() error = \"%+v\", want \"%+v\".", err, tc.err)
-		}
-		if out.String() != tc.res {
-			t.Errorf("Octet() = \"%v\", want \"%v\".", out.String(), tc.res)
+		str := OctetString(bytes.NewReader(tc.text))
+		if str != tc.res {
+			t.Errorf("OctetString() = \"%v\", want \"%v\".", str, tc.res)
 		}
 	}
 }
@@ -53,13 +48,9 @@ func TestUnicodePoint(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		out := new(bytes.Buffer)
-		err := UnicodePoint(out, bytes.NewReader(tc.text))
-		if !errs.Is(err, tc.err) {
-			t.Errorf("UnicodePoint() error = \"%+v\", want \"%+v\".", err, tc.err)
-		}
-		if out.String() != tc.res {
-			t.Errorf("UnicodePoint() = \"%v\", want \"%v\".", out.String(), tc.res)
+		str := UnicodePointString(bytes.NewReader(tc.text))
+		if str != tc.res {
+			t.Errorf("UnicodePointString() = \"%v\", want \"%v\".", str, tc.res)
 		}
 	}
 }
