@@ -32,7 +32,7 @@ func TranslateString(formName, txt string) (string, error) {
 		return "", errs.WrapWithCause(err, nil, errs.WithContext("formName", formName))
 	}
 	if f == wdth.Narrow {
-		return f.String(NewReplaceerkanaNFD().Replace(txt)), nil
+		return NewReplaceerHalfWidthkana().Replace(f.String(NewReplaceerkanaNFD().Replace(txt))), nil
 	}
 	return NewReplaceerkanaNFC().Replace(f.String(txt)), nil
 }

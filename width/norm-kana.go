@@ -53,6 +53,20 @@ func NewReplaceerkanaNFD() *strings.Replacer {
 	return strings.NewReplacer(ss...)
 }
 
+var normKatakanaMap2 = map[string]string{
+	string([]rune{'ヰ'}): string([]rune{'ｲ'}),
+	string([]rune{'ヱ'}): string([]rune{'ｴ'}),
+}
+
+//NewReplaceerHalfWidthkana returns strings.Replacer instance for complement half-width katakana
+func NewReplaceerHalfWidthkana() *strings.Replacer {
+	ss := []string{}
+	for k, v := range normKatakanaMap2 {
+		ss = append(ss, k, v)
+	}
+	return strings.NewReplacer(ss...)
+}
+
 /* Copyright 2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

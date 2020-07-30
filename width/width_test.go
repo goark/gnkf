@@ -2,6 +2,7 @@ package width
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -25,20 +26,20 @@ func TestTranslate(t *testing.T) {
 		err      error
 	}{
 		{
-			inp:      []byte("ペンギン 12345"),
-			out:      []byte("ﾍﾟﾝｷﾞﾝ 12345"),
+			inp:      []byte("ペンギン 12345 ヸヹヺ"),
+			out:      []byte("ﾍﾟﾝｷﾞﾝ 12345 ｲﾞｴﾞｦﾞ"),
 			formName: "narrow",
 			err:      nil,
 		},
 		{
-			inp:      []byte("ﾍﾟﾝｷﾞﾝ 12345"),
-			out:      []byte("ペンギン　１２３４５"),
+			inp:      []byte("ﾍﾟﾝｷﾞﾝ 12345 ヸヹｦﾞ"),
+			out:      []byte("ペンギン　１２３４５　ヸヹヺ"),
 			formName: "widen",
 			err:      nil,
 		},
 		{
-			inp:      []byte("ﾍﾟﾝｷﾞﾝ　１２３４５"),
-			out:      []byte("ペンギン 12345"),
+			inp:      []byte("ﾍﾟﾝｷﾞﾝ　１２３４５ ヸヹｦﾞ"),
+			out:      []byte("ペンギン 12345 ヸヹヺ"),
 			formName: "fold",
 			err:      nil,
 		},
@@ -56,6 +57,7 @@ func TestTranslate(t *testing.T) {
 				t.Errorf("Translate() error = \"%+v\", want \"%+v\".", err, tc.err)
 			}
 		} else if !bytes.Equal(buf.Bytes(), tc.out) {
+			fmt.Println(buf.String())
 			t.Errorf("Translate(%s) -> %s, want %s", tc.formName, dump.OctetString(bytes.NewReader(tc.inp)), dump.OctetString(buf))
 		}
 	}
