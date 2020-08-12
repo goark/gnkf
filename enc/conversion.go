@@ -13,11 +13,11 @@ import (
 func Convert(toIanaName string, writer io.Writer, fromIanaName string, txt io.Reader) error {
 	encoder, err := Encoding(toIanaName)
 	if err != nil {
-		return errs.WrapWithCause(err, nil, errs.WithContext("toIanaName", toIanaName))
+		return errs.Wrap(err, errs.WithContext("toIanaName", toIanaName))
 	}
 	decoder, err := Encoding(fromIanaName)
 	if err != nil {
-		return errs.WrapWithCause(err, nil, errs.WithContext("fromIanaName", fromIanaName))
+		return errs.Wrap(err, errs.WithContext("fromIanaName", fromIanaName))
 	}
 	if encoder == unicode.UTF8 {
 		return decode(decoder, writer, txt)
@@ -33,14 +33,14 @@ func convert(encoder, decoder encoding.Encoding, writer io.Writer, txt io.Reader
 		return notConvert(writer, txt)
 	}
 	if _, err := io.Copy(encoder.NewEncoder().Writer(writer), decoder.NewDecoder().Reader(txt)); err != nil {
-		return errs.WrapWithCause(ecode.ErrInvalidEncoding, err)
+		return errs.Wrap(ecode.ErrInvalidEncoding, errs.WithCause(err))
 	}
 	return nil
 }
 
 func notConvert(writer io.Writer, txt io.Reader) error {
 	if _, err := io.Copy(writer, txt); err != nil {
-		return errs.WrapWithCause(err, nil)
+		return errs.Wrap(err)
 	}
 	return nil
 }

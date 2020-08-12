@@ -28,7 +28,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 		Short: "Network Kanji Filter by Golang",
 		Long:  "Network Kanji Filter by Golang",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return debugPrint(ui, errs.WrapWithCause(ecode.ErrNoCommand, nil))
+			return debugPrint(ui, errs.Wrap(ecode.ErrNoCommand))
 		},
 	}
 	rootCmd.SetArgs(args)               //arguments of command-line

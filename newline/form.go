@@ -52,7 +52,7 @@ func FormOf(name string) (Form, error) {
 	if f, ok := formNamesMap[strings.ToLower(name)]; ok {
 		return f, nil
 	}
-	return Form(0), errs.WrapWithCause(ecode.ErrInvalidNewlineForm, nil, errs.WithContext("name", name))
+	return Form(0), errs.Wrap(ecode.ErrInvalidNewlineForm, errs.WithContext("name", name))
 }
 
 //Code returns newline code string

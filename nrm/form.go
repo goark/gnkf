@@ -39,7 +39,7 @@ func FormOf(name string) (norm.Form, error) {
 	if f, ok := formNamesMap[strings.ToLower(name)]; ok {
 		return f, nil
 	}
-	return norm.Form(0), errs.WrapWithCause(ecode.ErrInvalidNormForm, nil, errs.WithContext("name", name))
+	return norm.Form(0), errs.Wrap(ecode.ErrInvalidNormForm, errs.WithContext("name", name))
 }
 
 /* Copyright 2020 Spiegel

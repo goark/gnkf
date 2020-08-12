@@ -27,23 +27,23 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 			//Options
 			inp, err := cmd.Flags().GetString("file")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --file option"))
+				return debugPrint(ui, errs.New("Error in --file option", errs.WithCause(err)))
 			}
 			out, err := cmd.Flags().GetString("output")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --output option"))
+				return debugPrint(ui, errs.New("Error in --output option", errs.WithCause(err)))
 			}
 			from, err := cmd.Flags().GetString("src-encoding")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --src-encoding option"))
+				return debugPrint(ui, errs.New("Error in --src-encoding option", errs.WithCause(err)))
 			}
 			to, err := cmd.Flags().GetString("dst-encoding")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --dst-encoding option"))
+				return debugPrint(ui, errs.New("Error in --dst-encoding option", errs.WithCause(err)))
 			}
 			flagGuess, err := cmd.Flags().GetBool("guess")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --guess option"))
+				return debugPrint(ui, errs.New("Error in --guess option", errs.WithCause(err)))
 			}
 
 			//Input stream
@@ -51,7 +51,7 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 			if len(inp) > 0 {
 				file, err := os.Open(inp)
 				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp)))
+					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp)))
 				}
 				defer file.Close()
 				r = file
@@ -60,7 +60,7 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 				dup := &bytes.Buffer{}
 				ss, err := guess.Encoding(io.TeeReader(r, dup))
 				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, "error in guess text", errs.WithContext("file", inp)))
+					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp)))
 				}
 				if len(ss) > 0 {
 					from = ss[0]
@@ -73,7 +73,7 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 			if len(out) > 0 {
 				file, err := os.Create(out)
 				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("output", out)))
+					return debugPrint(ui, errs.Wrap(err, errs.WithContext("output", out)))
 				}
 				defer file.Close()
 				w = file
@@ -81,7 +81,7 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 
 			//Run command
 			if err := enc.Convert(to, w, from, r); err != nil {
-				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp), errs.WithContext("output", out)))
+				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
 			}
 			return nil
 		},

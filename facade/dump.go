@@ -20,11 +20,11 @@ func newDumpCmd(ui *rwi.RWI) *cobra.Command {
 			//Options
 			path, err := cmd.Flags().GetString("file")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --file option"))
+				return debugPrint(ui, errs.New("Error in --file option", errs.WithCause(err)))
 			}
 			flagUnicode, err := cmd.Flags().GetBool("unicode")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --unicode option"))
+				return debugPrint(ui, errs.New("Error in --unicode option", errs.WithCause(err)))
 			}
 
 			//Input stream
@@ -32,7 +32,7 @@ func newDumpCmd(ui *rwi.RWI) *cobra.Command {
 			if len(path) > 0 {
 				file, err := os.Open(path)
 				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", path)))
+					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", path)))
 				}
 				defer file.Close()
 				r = file
@@ -45,9 +45,9 @@ func newDumpCmd(ui *rwi.RWI) *cobra.Command {
 				err = dump.Octet(ui.Writer(), r)
 			}
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", path)))
+				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", path)))
 			}
-			return debugPrint(ui, errs.Wrap(ui.Outputln(), "", errs.WithContext("file", path)))
+			return debugPrint(ui, errs.Wrap(ui.Outputln(), errs.WithContext("file", path)))
 		},
 	}
 	dumpCmd.Flags().StringP("file", "f", "", "path of input text file")

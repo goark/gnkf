@@ -22,19 +22,19 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 			//Options
 			inp, err := cmd.Flags().GetString("file")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --file option"))
+				return debugPrint(ui, errs.New("Error in --file option", errs.WithCause(err)))
 			}
 			out, err := cmd.Flags().GetString("output")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --output option"))
+				return debugPrint(ui, errs.New("Error in --output option", errs.WithCause(err)))
 			}
 			form, err := cmd.Flags().GetString("norm-form")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --norm-form option"))
+				return debugPrint(ui, errs.New("Error in --norm-form option", errs.WithCause(err)))
 			}
 			krFlag, err := cmd.Flags().GetBool("kangxi-radicals")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --kangxi-radicals option"))
+				return debugPrint(ui, errs.New("Error in --kangxi-radicals option", errs.WithCause(err)))
 			}
 
 			//Input stream
@@ -42,7 +42,7 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 			if len(inp) > 0 {
 				file, err := os.Open(inp)
 				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp)))
+					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp)))
 				}
 				defer file.Close()
 				r = file
@@ -53,7 +53,7 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 			if len(out) > 0 {
 				file, err := os.Create(out)
 				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("output", out)))
+					return debugPrint(ui, errs.Wrap(err, errs.WithContext("output", out)))
 				}
 				defer file.Close()
 				w = file
@@ -61,7 +61,7 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 
 			//Run command
 			if err := nrm.Normalize(form, w, r, krFlag); err != nil {
-				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp), errs.WithContext("output", out)))
+				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
 			}
 			return nil
 		},

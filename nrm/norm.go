@@ -11,14 +11,14 @@ import (
 func Normalize(formName string, writer io.Writer, txt io.Reader, krFlag bool) error {
 	f, err := FormOf(formName)
 	if err != nil {
-		return errs.WrapWithCause(err, nil, errs.WithContext("formName", formName))
+		return errs.Wrap(err, errs.WithContext("formName", formName))
 	}
 	if (f == norm.NFKC || f == norm.NFKD) && krFlag {
 		return NormKangxiRadicals(writer, txt)
 	}
 
 	if _, err := io.Copy(writer, f.Reader(txt)); err != nil {
-		return errs.WrapWithCause(err, nil, errs.WithContext("formName", formName))
+		return errs.Wrap(err, errs.WithContext("formName", formName))
 	}
 	return nil
 }

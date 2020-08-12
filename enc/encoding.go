@@ -13,11 +13,11 @@ func Encoding(ianaName string) (encoding.Encoding, error) {
 	if err != nil {
 		e, err = ianaindex.MIME.Encoding(ianaName)
 		if err != nil {
-			return nil, errs.WrapWithCause(ecode.ErrNotSuppotEncoding, err, errs.WithContext("ianaName", ianaName))
+			return nil, errs.Wrap(ecode.ErrNotSuppotEncoding, errs.WithCause(err), errs.WithContext("ianaName", ianaName))
 		}
 	}
 	if e == nil {
-		return nil, errs.WrapWithCause(ecode.ErrNotSuppotEncoding, err, errs.WithContext("ianaName", ianaName))
+		return nil, errs.Wrap(ecode.ErrNotSuppotEncoding, errs.WithCause(err), errs.WithContext("ianaName", ianaName))
 	}
 	return e, nil
 }

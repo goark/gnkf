@@ -11,15 +11,15 @@ import (
 func Convert(formName string, writer io.Writer, txt io.Reader) error {
 	f, err := FormOf(formName)
 	if err != nil {
-		return errs.WrapWithCause(err, nil, errs.WithContext("formName", formName))
+		return errs.Wrap(err, errs.WithContext("formName", formName))
 	}
 
 	buf := &bytes.Buffer{}
 	if _, err := buf.ReadFrom(txt); err != nil {
-		return errs.WrapWithCause(err, nil)
+		return errs.Wrap(err)
 	}
 	if _, err := NewReplacer(f).WriteString(writer, buf.String()); err != nil {
-		return errs.WrapWithCause(err, nil)
+		return errs.Wrap(err)
 	}
 	return nil
 }

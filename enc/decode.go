@@ -13,7 +13,7 @@ import (
 func Decode(writer io.Writer, ianaName string, txt io.Reader) error {
 	decoder, err := Encoding(ianaName)
 	if err != nil {
-		return errs.WrapWithCause(err, nil, errs.WithContext("ianaName", ianaName))
+		return errs.Wrap(err, errs.WithContext("ianaName", ianaName))
 	}
 	return decode(decoder, writer, txt)
 }
@@ -23,7 +23,7 @@ func decode(decoder encoding.Encoding, writer io.Writer, txt io.Reader) error {
 		return notConvert(writer, txt)
 	}
 	if _, err := io.Copy(writer, decoder.NewDecoder().Reader(txt)); err != nil {
-		return errs.WrapWithCause(ecode.ErrInvalidEncoding, err)
+		return errs.Wrap(ecode.ErrInvalidEncoding, errs.WithCause(err))
 	}
 	return nil
 }

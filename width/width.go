@@ -13,14 +13,14 @@ import (
 func Convert(formName string, writer io.Writer, txt io.Reader) error {
 	buf := &bytes.Buffer{}
 	if _, err := buf.ReadFrom(txt); err != nil {
-		return errs.WrapWithCause(err, nil)
+		return errs.Wrap(err)
 	}
 	str, err := ConvertString(formName, buf.String())
 	if err != nil {
-		return errs.WrapWithCause(err, nil)
+		return errs.Wrap(err)
 	}
 	if _, err := strings.NewReader(str).WriteTo(writer); err != nil {
-		return errs.WrapWithCause(err, nil)
+		return errs.Wrap(err)
 	}
 	return nil
 }
@@ -29,7 +29,7 @@ func Convert(formName string, writer io.Writer, txt io.Reader) error {
 func ConvertString(formName, txt string) (string, error) {
 	f, err := FormOf(formName)
 	if err != nil {
-		return "", errs.WrapWithCause(err, nil, errs.WithContext("formName", formName))
+		return "", errs.Wrap(err, errs.WithContext("formName", formName))
 	}
 	if f == wdth.Narrow {
 		return NewReplaceerHalfWidthkana().Replace(f.String(NewReplaceerkanaNFD().Replace(txt))), nil

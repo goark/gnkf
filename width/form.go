@@ -37,7 +37,7 @@ func FormOf(name string) (wdth.Transformer, error) {
 	if f, ok := formNamesMap[strings.ToLower(name)]; ok {
 		return f, nil
 	}
-	return wdth.Fold, errs.WrapWithCause(ecode.ErrInvalidWidthForm, nil, errs.WithContext("name", name))
+	return wdth.Fold, errs.Wrap(ecode.ErrInvalidWidthForm, errs.WithContext("name", name))
 }
 
 /* Copyright 2020 Spiegel
