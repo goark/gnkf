@@ -45,7 +45,7 @@ func FormOf(name string) (Form, error) {
 	if f, ok := formNamesMap[strings.ToLower(name)]; ok {
 		return f, nil
 	}
-	return Form(0), errs.WrapWithCause(ecode.ErrInvalidKanaForm, nil, errs.WithContext("name", name))
+	return Form(0), errs.Wrap(ecode.ErrInvalidKanaForm, errs.WithContext("name", name))
 }
 
 /* Copyright 2020 Spiegel

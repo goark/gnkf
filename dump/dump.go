@@ -21,7 +21,7 @@ func Octet(w io.Writer, r io.Reader) error {
 			if errs.Is(err, io.EOF) {
 				break
 			}
-			return errs.WrapWithCause(err, nil)
+			return errs.Wrap(err)
 		}
 		fmt.Fprintf(w, "%s0x%02x", sep, b)
 		sep = ", "
@@ -42,10 +42,10 @@ func OctetString(r io.Reader) string {
 func UnicodePoint(w io.Writer, r io.Reader) error {
 	buf := &bytes.Buffer{}
 	if _, err := buf.ReadFrom(r); err != nil {
-		return errs.Wrap(err, "")
+		return errs.Wrap(err)
 	}
 	if !utf8.Valid(buf.Bytes()) {
-		return errs.WrapWithCause(ecode.ErrInvalidUTF8Text, nil)
+		return errs.Wrap(ecode.ErrInvalidUTF8Text)
 	}
 
 	sep := ""

@@ -22,15 +22,15 @@ func newNwlnCmd(ui *rwi.RWI) *cobra.Command {
 			//Options
 			inp, err := cmd.Flags().GetString("file")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --file option"))
+				return debugPrint(ui, errs.New("Error in --file option", errs.WithCause(err)))
 			}
 			out, err := cmd.Flags().GetString("output")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --output option"))
+				return debugPrint(ui, errs.New("Error in --output option", errs.WithCause(err)))
 			}
 			form, err := cmd.Flags().GetString("newline-form")
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, "Error in --newline-form option"))
+				return debugPrint(ui, errs.New("Error in --newline-form option", errs.WithCause(err)))
 			}
 
 			//Input stream
@@ -38,7 +38,7 @@ func newNwlnCmd(ui *rwi.RWI) *cobra.Command {
 			if len(inp) > 0 {
 				file, err := os.Open(inp)
 				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp)))
+					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp)))
 				}
 				defer file.Close()
 				r = file
@@ -49,7 +49,7 @@ func newNwlnCmd(ui *rwi.RWI) *cobra.Command {
 			if len(out) > 0 {
 				file, err := os.Create(out)
 				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("output", out)))
+					return debugPrint(ui, errs.Wrap(err, errs.WithContext("output", out)))
 				}
 				defer file.Close()
 				w = file
@@ -57,7 +57,7 @@ func newNwlnCmd(ui *rwi.RWI) *cobra.Command {
 
 			//Run command
 			if err := newline.Convert(form, w, r); err != nil {
-				return debugPrint(ui, errs.Wrap(err, "", errs.WithContext("file", inp), errs.WithContext("output", out)))
+				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
 			}
 			return nil
 		},

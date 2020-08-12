@@ -230,7 +230,7 @@ var kangxiRadicals = unicode.SpecialCase{
 //NormKangxiRadicalsBytes dose Unicode normalization kangxi radicals only
 func NormKangxiRadicalsBytes(txt []byte) ([]byte, error) {
 	if !utf8.Valid(txt) {
-		return nil, errs.WrapWithCause(ecode.ErrInvalidUTF8Text, nil)
+		return nil, errs.Wrap(ecode.ErrInvalidUTF8Text)
 	}
 	return bytes.ToUpperSpecial(kangxiRadicals, txt), nil
 }
@@ -239,15 +239,15 @@ func NormKangxiRadicalsBytes(txt []byte) ([]byte, error) {
 func NormKangxiRadicals(writer io.Writer, txt io.Reader) error {
 	buf := &bytes.Buffer{}
 	if _, err := buf.ReadFrom(txt); err != nil {
-		return errs.WrapWithCause(err, nil)
+		return errs.Wrap(err)
 	}
 
 	dst, err := NormKangxiRadicalsBytes(buf.Bytes())
 	if err != nil {
-		return errs.WrapWithCause(err, nil)
+		return errs.Wrap(err)
 	}
 	if _, err := io.Copy(writer, bytes.NewReader(dst)); err != nil {
-		return errs.WrapWithCause(err, nil)
+		return errs.Wrap(err)
 	}
 	return nil
 }
