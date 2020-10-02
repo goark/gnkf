@@ -2,6 +2,7 @@ package enc_test
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"strings"
 
@@ -9,10 +10,16 @@ import (
 	"github.com/spiegel-im-spiegel/gnkf/enc"
 )
 
-func ExampleTranslate() {
+func ExampleConvert() {
 	buf := &bytes.Buffer{}
-	enc.Convert("Shift_JIS", buf, "UTF-8", strings.NewReader("こんにちは，世界！\n私の名前は Spiegel です。"))
-	dump.Octet(os.Stdout, buf)
+	if err := enc.Convert("Shift_JIS", buf, "UTF-8", strings.NewReader("こんにちは，世界！\n私の名前は Spiegel です。")); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
+	if err := dump.Octet(os.Stdout, buf); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
 	//Output:
 	//0x82, 0xb1, 0x82, 0xf1, 0x82, 0xc9, 0x82, 0xbf, 0x82, 0xcd, 0x81, 0x43, 0x90, 0xa2, 0x8a, 0x45, 0x81, 0x49, 0x0a, 0x8e, 0x84, 0x82, 0xcc, 0x96, 0xbc, 0x91, 0x4f, 0x82, 0xcd, 0x20, 0x53, 0x70, 0x69, 0x65, 0x67, 0x65, 0x6c, 0x20, 0x82, 0xc5, 0x82, 0xb7, 0x81, 0x42
 }

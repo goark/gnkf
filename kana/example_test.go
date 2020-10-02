@@ -6,7 +6,7 @@ import (
 	"github.com/spiegel-im-spiegel/gnkf/kana"
 )
 
-func ExampleTranslateString() {
+func ExampleConvertString() {
 	txt := "あいうえおわゐゑをんゔゕゖゝゞアイウエオワヰヱヲンヴヵヶヽヾ"
 	str, err := kana.ConvertString("hiragana", txt, false)
 	if err != nil {
