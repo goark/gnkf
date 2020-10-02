@@ -9,25 +9,36 @@ import (
 	"github.com/spiegel-im-spiegel/gnkf/width"
 )
 
-func ExampleTranslateString() {
+func ExampleConvertString() {
 	txt := "12345 コンバンハ、セカイ ６７８９０ ｺﾝﾊﾞﾝﾊ､ﾆｯﾎﾟﾝ"
 	str, err := width.ConvertString("narrow", txt)
 	if err != nil {
 		return
 	}
-	dump.UnicodePoint(os.Stdout, bytes.NewBufferString(str))
+	if err := dump.UnicodePoint(os.Stdout, bytes.NewBufferString(str)); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
 	fmt.Println()
 	str, err = width.ConvertString("widen", txt)
 	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		return
 	}
-	dump.UnicodePoint(os.Stdout, bytes.NewBufferString(str))
+	if err := dump.UnicodePoint(os.Stdout, bytes.NewBufferString(str)); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
 	fmt.Println()
 	str, err = width.ConvertString("fold", txt)
 	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		return
 	}
-	dump.UnicodePoint(os.Stdout, bytes.NewBufferString(str))
+	if err := dump.UnicodePoint(os.Stdout, bytes.NewBufferString(str)); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
 	fmt.Println()
 	//Output:
 	//0x0031, 0x0032, 0x0033, 0x0034, 0x0035, 0x0020, 0xff7a, 0xff9d, 0xff8a, 0xff9e, 0xff9d, 0xff8a, 0xff64, 0xff7e, 0xff76, 0xff72, 0x0020, 0x0036, 0x0037, 0x0038, 0x0039, 0x0030, 0x0020, 0xff7a, 0xff9d, 0xff8a, 0xff9e, 0xff9d, 0xff8a, 0xff64, 0xff86, 0xff6f, 0xff8e, 0xff9f, 0xff9d

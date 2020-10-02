@@ -2,6 +2,7 @@ package nrm_test
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"strings"
 
@@ -11,8 +12,12 @@ import (
 
 func ExampleNormalize() {
 	buf := &bytes.Buffer{}
-	nrm.Normalize("nfkc", buf, strings.NewReader("ﾍﾟﾝｷﾞﾝ"), false)
-	dump.UnicodePoint(os.Stdout, buf)
+	if err := nrm.Normalize("nfkc", buf, strings.NewReader("ﾍﾟﾝｷﾞﾝ"), false); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+	if err := dump.UnicodePoint(os.Stdout, buf); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
 	//Output:
 	//0x30da, 0x30f3, 0x30ae, 0x30f3
 }

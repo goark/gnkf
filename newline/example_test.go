@@ -2,6 +2,7 @@ package newline_test
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"strings"
 
@@ -12,10 +13,16 @@ import (
 var text = `こんにちは
 世界！`
 
-func ExampleTranslate() {
+func ExampleConvert() {
 	buf := &bytes.Buffer{}
-	newline.Convert("crlf", buf, strings.NewReader(text))
-	dump.UnicodePoint(os.Stdout, buf)
+	if err := newline.Convert("crlf", buf, strings.NewReader(text)); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
+	if err := dump.UnicodePoint(os.Stdout, buf); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
 	//Output:
 	//0x3053, 0x3093, 0x306b, 0x3061, 0x306f, 0x000d, 0x000a, 0x4e16, 0x754c, 0xff01
 }

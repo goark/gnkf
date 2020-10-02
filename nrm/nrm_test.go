@@ -64,7 +64,7 @@ func TestNormalize(t *testing.T) {
 			}
 		} else if !bytes.Equal(buf.Bytes(), tc.out) {
 			t.Errorf("Normalize(%s) result wrong translation: ", tc.formName)
-			dump.Octet(os.Stdout, buf)
+			_ = dump.Octet(os.Stdout, buf)
 		}
 	}
 }
@@ -114,7 +114,7 @@ func TestNormKangxiRadicals(t *testing.T) {
 			}
 		} else if !bytes.Equal(buf.Bytes(), tc.out) {
 			t.Error("NormKangxiRadicals() result wrong translation: ")
-			dump.Octet(os.Stdout, buf)
+			_ = dump.Octet(os.Stdout, buf)
 		}
 	}
 }
