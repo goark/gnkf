@@ -31,9 +31,11 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 			return debugPrint(ui, errs.Wrap(ecode.ErrNoCommand))
 		},
 	}
-	rootCmd.SetArgs(args)               //arguments of command-line
-	rootCmd.SetIn(ui.Reader())          //Stdin
-	rootCmd.SetOutput(ui.ErrorWriter()) //Stdout and Stderr
+	rootCmd.SilenceUsage = true
+	rootCmd.SetArgs(args)            //arguments of command-line
+	rootCmd.SetIn(ui.Reader())       //Stdin
+	rootCmd.SetOut(ui.ErrorWriter()) //Stdout -> Stderr
+	rootCmd.SetErr(ui.ErrorWriter()) //Stderr
 	rootCmd.AddCommand(
 		newVersionCmd(ui),
 		newGuessCmd(ui),
@@ -43,6 +45,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 		newNwlnCmd(ui),
 		newWidthCmd(ui),
 		newKanaCmd(ui),
+		newBase64Cmd(ui),
 	)
 
 	//global options
@@ -53,8 +56,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 
 func debugPrint(ui *rwi.RWI, err error) error {
 	if debugFlag && err != nil {
-		fmt.Fprintf(ui.ErrorWriter(), "%+v\n", err)
-		return nil
+		fmt.Fprintf(ui.Writer(), "%+v\n", err)
 	}
 	return err
 }
