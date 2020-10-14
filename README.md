@@ -222,6 +222,36 @@ $ echo ニッポン | gnkf kana -c chokuon
 ニツポン
 ```
 
+### gnkf base64 command
+
+```
+$ gnkf base64 -h
+Encode/Decode BASE64.
+
+Usage:
+  gnkf base64 [flags]
+
+Aliases:
+  base64, b64
+
+Flags:
+  -d, --decode          decode BASE64 string
+  -f, --file string     path of input text file
+  -u, --for-url         encoding/decoding defined in RFC 4648
+  -h, --help            help for base64
+  -p, --no-padding      no padding
+  -o, --output string   path of output file
+
+Global Flags:
+      --debug   for debug
+
+$ echo Hello World | gnkf b64
+SGVsbG8gV29ybGQK
+
+$ echo SGVsbG8gV29ybGQK | gnkf b64 -d
+Hello World
+```
+
 ### gnkf dump command
 
 ```
