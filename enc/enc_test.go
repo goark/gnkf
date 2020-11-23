@@ -24,7 +24,7 @@ func TestEncode(t *testing.T) {
 		{inp: textUTF8, out: textEUC, ianaName: "euc-jp", err: nil},
 		{inp: textUTF8, out: textUTF8, ianaName: "utf-8", err: nil},
 		{inp: textUTF8, out: []byte{}, ianaName: "foo", err: ecode.ErrNotSuppotEncoding},
-		{inp: textUTF8, out: []byte{}, ianaName: "us-ascii", err: ecode.ErrNotSuppotEncoding},
+		{inp: textUTF8, out: []byte{}, ianaName: "us-ascii", err: ecode.ErrInvalidEncoding},
 		{inp: textEUC, out: []byte{}, ianaName: "shift_jis", err: ecode.ErrInvalidEncoding},
 		{inp: textSJIS, out: []byte{}, ianaName: "euc-jp", err: ecode.ErrInvalidEncoding},
 	}

@@ -279,4 +279,8 @@ $ echo ペンギン | gnkf dump --unicode
 0x30da, 0x30f3, 0x30ae, 0x30f3, 0x000a
 ```
 
+## Modules Requirement Graph
+
+[![dependency.png](./dependency.png)](./dependency.png)
+
 [gnkf]: https://github.com/spiegel-im-spiegel/gnkf "spiegel-im-spiegel/gnkf: Network Kanji Filter by Golang"
