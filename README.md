@@ -283,9 +283,6 @@ $ echo ﻿Hello | gnkf dump
 
 $ echo ﻿Hello | gnkf remove-bom | gnkf dump
 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x0a
-
-$ echo SGVsbG8gV29ybGQK | gnkf b64 -d
-Hello World
 ```
 
 ### gnkf dump command
