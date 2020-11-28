@@ -1,6 +1,7 @@
 package facade
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"strings"
@@ -8,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gnkf/nrm"
+	"github.com/spiegel-im-spiegel/gnkf/rbom"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
@@ -36,6 +38,10 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 			if err != nil {
 				return debugPrint(ui, errs.New("Error in --kangxi-radicals option", errs.WithCause(err)))
 			}
+			rbFlag, err := cmd.Flags().GetBool("remove-bom")
+			if err != nil {
+				return debugPrint(ui, errs.New("Error in --remove-bom option", errs.WithCause(err)))
+			}
 
 			//Input stream
 			r := ui.Reader()
@@ -59,6 +65,15 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 				w = file
 			}
 
+			//Remove BOM
+			if rbFlag {
+				b, err := rbom.RemoveBom(r)
+				if err != nil {
+					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+				}
+				r = bytes.NewReader(b)
+			}
+
 			//Run command
 			if err := nrm.Normalize(form, w, r, krFlag); err != nil {
 				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
@@ -70,6 +85,7 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 	normCmd.Flags().StringP("output", "o", "", "path of output file")
 	normCmd.Flags().StringP("norm-form", "n", "nfc", fmt.Sprintf("Unicode normalization form: [%s]", strings.Join(nrm.FormList(), "|")))
 	normCmd.Flags().BoolP("kangxi-radicals", "k", false, "normalize kangxi radicals only (with nfkc or nfkd form)")
+	normCmd.Flags().BoolP("remove-bom", "b", false, "remove BOM character")
 
 	return normCmd
 }

@@ -26,6 +26,7 @@ Usage:
   gnkf [command]
 
 Available Commands:
+  base64      Encode/Decode BASE64
   dump        Hexadecimal view of octet data stream
   enc         Convert character encoding of the text
   guess       Guess character encoding of the text
@@ -33,6 +34,7 @@ Available Commands:
   kana        Convert kana characters in the text
   newline     Convert newline form in the text
   norm        Unicode normalization of the text
+  remove-bom  Remove BOM character in UTF-8 string
   version     Print the version number
   width       Convert character width in the text
 
@@ -92,6 +94,7 @@ Flags:
   -g, --guess                 guess character encoding of source text
   -h, --help                  help for enc
   -o, --output string         path of output file
+  -b, --remove-bom            remove BOM character in source text (UTF-8 only)
   -s, --src-encoding string   character encoding name of source text (default "utf-8")
 
 Global Flags:
@@ -144,6 +147,7 @@ Flags:
   -k, --kangxi-radicals    normalize kangxi radicals only (with nfkc or nfkd form)
   -n, --norm-form string   Unicode normalization form: [nfc|nfd|nfkc|nfkd] (default "nfc")
   -o, --output string      path of output file
+  -b, --remove-bom         remove BOM character
 
 Global Flags:
       --debug   for debug
@@ -179,6 +183,7 @@ Flags:
   -f, --file string              path of input text file
   -h, --help                     help for width
   -o, --output string            path of output file
+  -b, --remove-bom               remove BOM character
 
 Global Flags:
       --debug   for debug
@@ -207,6 +212,7 @@ Flags:
       --fold                     convert character width by fold form
   -h, --help                     help for kana
   -o, --output string            path of output file
+  -b, --remove-bom               remove BOM character
 
 Global Flags:
       --debug   for debug
@@ -247,6 +253,36 @@ Global Flags:
 
 $ echo Hello World | gnkf b64
 SGVsbG8gV29ybGQK
+
+$ echo SGVsbG8gV29ybGQK | gnkf b64 -d
+Hello World
+```
+
+### gnkf remove-bom command
+
+```
+$ gnkf remove-bom -h
+Remove BOM character in UTF-8 string.
+
+Usage:
+  gnkf remove-bom [flags]
+
+Aliases:
+  remove-bom, rbom, rb
+
+Flags:
+  -f, --file string     path of input text file
+  -h, --help            help for remove-bom
+  -o, --output string   path of output file
+
+Global Flags:
+      --debug   for debug
+
+$ echo ﻿Hello | gnkf dump
+0xef, 0xbb, 0xbf, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x0a
+
+$ echo ﻿Hello | gnkf remove-bom | gnkf dump
+0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x0a
 
 $ echo SGVsbG8gV29ybGQK | gnkf b64 -d
 Hello World
