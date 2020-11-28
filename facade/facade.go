@@ -46,6 +46,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 		newWidthCmd(ui),
 		newKanaCmd(ui),
 		newBase64Cmd(ui),
+		newRemoveBomCmd(ui),
 	)
 
 	//global options

@@ -1,12 +1,14 @@
 package facade
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spiegel-im-spiegel/errs"
+	"github.com/spiegel-im-spiegel/gnkf/rbom"
 	"github.com/spiegel-im-spiegel/gnkf/width"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
@@ -32,6 +34,10 @@ func newWidthCmd(ui *rwi.RWI) *cobra.Command {
 			if err != nil {
 				return debugPrint(ui, errs.New("Error in --conversion-form option", errs.WithCause(err)))
 			}
+			rbFlag, err := cmd.Flags().GetBool("remove-bom")
+			if err != nil {
+				return debugPrint(ui, errs.New("Error in --remove-bom option", errs.WithCause(err)))
+			}
 
 			//Input stream
 			r := ui.Reader()
@@ -55,6 +61,15 @@ func newWidthCmd(ui *rwi.RWI) *cobra.Command {
 				w = file
 			}
 
+			//Remove BOM
+			if rbFlag {
+				b, err := rbom.RemoveBom(r)
+				if err != nil {
+					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+				}
+				r = bytes.NewReader(b)
+			}
+
 			//Run command
 			if err := width.Convert(form, w, r); err != nil {
 				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
@@ -65,6 +80,7 @@ func newWidthCmd(ui *rwi.RWI) *cobra.Command {
 	widthCmd.Flags().StringP("file", "f", "", "path of input text file")
 	widthCmd.Flags().StringP("output", "o", "", "path of output file")
 	widthCmd.Flags().StringP("conversion-form", "c", "fold", fmt.Sprintf("conversion form: [%s]", strings.Join(width.FormList(), "|")))
+	widthCmd.Flags().BoolP("remove-bom", "b", false, "remove BOM character")
 
 	return widthCmd
 }

@@ -9,7 +9,9 @@ import (
 	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gnkf/enc"
 	"github.com/spiegel-im-spiegel/gnkf/guess"
+	"github.com/spiegel-im-spiegel/gnkf/rbom"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
+	"golang.org/x/text/encoding/unicode"
 )
 
 var descriptionEnc = `Convert character encoding of the text.
@@ -45,6 +47,10 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 			if err != nil {
 				return debugPrint(ui, errs.New("Error in --guess option", errs.WithCause(err)))
 			}
+			rbFlag, err := cmd.Flags().GetBool("remove-bom")
+			if err != nil {
+				return debugPrint(ui, errs.New("Error in --remove-bom option", errs.WithCause(err)))
+			}
 
 			//Input stream
 			r := ui.Reader()
@@ -79,6 +85,21 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 				w = file
 			}
 
+			//Remove BOM
+			if rbFlag {
+				e, err := enc.Encoding(from)
+				if err != nil {
+					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+				}
+				if e == unicode.UTF8 {
+					b, err := rbom.RemoveBom(r)
+					if err != nil {
+						return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+					}
+					r = bytes.NewReader(b)
+				}
+			}
+
 			//Run command
 			if err := enc.Convert(to, w, from, r); err != nil {
 				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
@@ -91,6 +112,7 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 	encCmd.Flags().StringP("src-encoding", "s", "utf-8", "character encoding name of source text")
 	encCmd.Flags().StringP("dst-encoding", "d", "utf-8", "character encoding name of output text")
 	encCmd.Flags().BoolP("guess", "g", false, "guess character encoding of source text")
+	encCmd.Flags().BoolP("remove-bom", "b", false, "remove BOM character in source text (UTF-8 only)")
 
 	return encCmd
 }

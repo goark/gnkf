@@ -2,28 +2,22 @@ package facade
 
 import (
 	"bytes"
-	"fmt"
+	"io"
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/kana"
 	"github.com/spiegel-im-spiegel/gnkf/rbom"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
-var descriptionKana = `Convert kana characters in the text.
- UTF-8 encoding only.
- "hiragana" and "katakana" forms are valid only for full-width kana character.`
-
 //newNormCmd returns cobra.Command instance for show sub-command
-func newKanaCmd(ui *rwi.RWI) *cobra.Command {
-	kanaCmd := &cobra.Command{
-		Use:     "kana",
-		Aliases: []string{"k"},
-		Short:   "Convert kana characters in the text",
-		Long:    descriptionKana,
+func newRemoveBomCmd(ui *rwi.RWI) *cobra.Command {
+	rbomCmd := &cobra.Command{
+		Use:     "remove-bom",
+		Aliases: []string{"rbom", "rb"},
+		Short:   "Remove BOM character in UTF-8 string",
+		Long:    "Remove BOM character in UTF-8 string.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//Options
 			inp, err := cmd.Flags().GetString("file")
@@ -33,18 +27,6 @@ func newKanaCmd(ui *rwi.RWI) *cobra.Command {
 			out, err := cmd.Flags().GetString("output")
 			if err != nil {
 				return debugPrint(ui, errs.New("Error in --output option", errs.WithCause(err)))
-			}
-			form, err := cmd.Flags().GetString("conversion-form")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --conversion-form option", errs.WithCause(err)))
-			}
-			foldFlag, err := cmd.Flags().GetBool("fold")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --fold option", errs.WithCause(err)))
-			}
-			rbFlag, err := cmd.Flags().GetBool("remove-bom")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --remove-bom option", errs.WithCause(err)))
 			}
 
 			//Input stream
@@ -69,29 +51,21 @@ func newKanaCmd(ui *rwi.RWI) *cobra.Command {
 				w = file
 			}
 
-			//Remove BOM
-			if rbFlag {
-				b, err := rbom.RemoveBom(r)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
-				}
-				r = bytes.NewReader(b)
-			}
-
 			//Run command
-			if err := kana.Convert(form, w, r, foldFlag); err != nil {
+			b, err := rbom.RemoveBom(r)
+			if err != nil {
+				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+			}
+			if _, err := io.Copy(w, bytes.NewReader(b)); err != nil {
 				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
 			}
 			return nil
 		},
 	}
-	kanaCmd.Flags().StringP("file", "f", "", "path of input text file")
-	kanaCmd.Flags().StringP("output", "o", "", "path of output file")
-	kanaCmd.Flags().StringP("conversion-form", "c", "katakana", fmt.Sprintf("conversion form: [%s]", strings.Join(kana.FormList(), "|")))
-	kanaCmd.Flags().BoolP("fold", "", false, "convert character width by fold form")
-	kanaCmd.Flags().BoolP("remove-bom", "b", false, "remove BOM character")
+	rbomCmd.Flags().StringP("file", "f", "", "path of input text file")
+	rbomCmd.Flags().StringP("output", "o", "", "path of output file")
 
-	return kanaCmd
+	return rbomCmd
 }
 
 /* Copyright 2020 Spiegel

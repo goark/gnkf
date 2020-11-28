@@ -14,7 +14,7 @@ func TestVersionNormal(t *testing.T) {
 		out    string
 		outErr string
 	}{
-		{args: []string{"version"}, out: "", outErr: "gnkf developer version\nCopyright 2020 Spiegel, licensed under Apache License, Version 2.0\n"},
+		{args: []string{"version"}, out: "", outErr: "gnkf developer version\nrepository: https://github.com/spiegel-im-spiegel/gnkf\n"},
 	}
 
 	for _, tc := range testCases {
