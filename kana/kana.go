@@ -10,12 +10,12 @@ import (
 )
 
 //Convert function converts kana character in text stream.
-func Convert(formName string, writer io.Writer, txt io.Reader, foldFlag bool) error {
+func Convert(f Form, writer io.Writer, txt io.Reader, foldFlag bool) error {
 	buf := &bytes.Buffer{}
 	if _, err := buf.ReadFrom(txt); err != nil {
 		return errs.Wrap(err)
 	}
-	str, err := ConvertString(formName, buf.String(), foldFlag)
+	str, err := ConvertString(f, buf.String(), foldFlag)
 	if err != nil {
 		return errs.Wrap(err)
 	}
@@ -26,15 +26,11 @@ func Convert(formName string, writer io.Writer, txt io.Reader, foldFlag bool) er
 }
 
 //ConvertString function converts kana character in text string.
-func ConvertString(formName string, txt string, foldFlag bool) (string, error) {
-	f, err := FormOf(formName)
-	if err != nil {
-		return "", errs.Wrap(err, errs.WithContext("formName", formName))
-	}
+func ConvertString(f Form, txt string, foldFlag bool) (string, error) {
 	if foldFlag {
 		s, err := width.ConvertString("fold", txt)
 		if err != nil {
-			return "", errs.Wrap(err, errs.WithContext("formName", formName))
+			return "", errs.Wrap(err, errs.WithContext("form", f.String()))
 		}
 		txt = s
 	}
@@ -50,7 +46,7 @@ func ConvertString(formName string, txt string, foldFlag bool) (string, error) {
 	}
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

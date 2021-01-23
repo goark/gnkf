@@ -2,11 +2,11 @@ package kana
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"strings"
 	"testing"
 
-	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gnkf/dump"
 	"github.com/spiegel-im-spiegel/gnkf/ecode"
 )
@@ -51,14 +51,20 @@ func TestTranslate(t *testing.T) {
 		},
 	}
 	for _, tc := range testCases {
-		buf := &bytes.Buffer{}
-		if err := Convert(tc.formName, buf, bytes.NewReader(tc.inp), false); err != nil {
-			if !errs.Is(err, tc.err) {
-				t.Errorf("Translate() error = \"%+v\", want \"%+v\".", err, tc.err)
+		f, err := FormOf(tc.formName)
+		if !errors.Is(err, tc.err) {
+			t.Errorf("FormOf(%v) error = \"%+v\", want \"%+v\".", tc.formName, err, tc.err)
+		}
+		if err == nil {
+			buf := &bytes.Buffer{}
+			if err := Convert(f, buf, bytes.NewReader(tc.inp), false); err != nil {
+				if err != nil {
+					t.Errorf("Convert() error = \"%+v\", want nil.", err)
+				}
+			} else if !bytes.Equal(buf.Bytes(), tc.out) {
+				fmt.Println(buf.String())
+				t.Errorf("Convert(%s) -> %s, want %s", tc.formName, dump.OctetString(bytes.NewReader(tc.inp)), dump.OctetString(buf))
 			}
-		} else if !bytes.Equal(buf.Bytes(), tc.out) {
-			fmt.Println(buf.String())
-			t.Errorf("Translate(%s) -> %s, want %s", tc.formName, dump.OctetString(bytes.NewReader(tc.inp)), dump.OctetString(buf))
 		}
 	}
 }
@@ -95,19 +101,25 @@ func TestTranslateFold(t *testing.T) {
 		},
 	}
 	for _, tc := range testCases {
-		buf := &bytes.Buffer{}
-		if err := Convert(tc.formName, buf, bytes.NewReader(tc.inp), true); err != nil {
-			if !errs.Is(err, tc.err) {
-				t.Errorf("Translate() error = \"%+v\", want \"%+v\".", err, tc.err)
+		f, err := FormOf(tc.formName)
+		if !errors.Is(err, tc.err) {
+			t.Errorf("FormOf(%v) error = \"%+v\", want \"%+v\".", tc.formName, err, tc.err)
+		}
+		if err == nil {
+			buf := &bytes.Buffer{}
+			if err := Convert(f, buf, bytes.NewReader(tc.inp), true); err != nil {
+				if err != nil {
+					t.Errorf("Convert() error = \"%+v\", want nil.", err)
+				}
+			} else if !bytes.Equal(buf.Bytes(), tc.out) {
+				fmt.Println(buf.String())
+				t.Errorf("Translate(%s) -> %s, want %s", tc.formName, dump.OctetString(bytes.NewReader(tc.inp)), dump.OctetString(buf))
 			}
-		} else if !bytes.Equal(buf.Bytes(), tc.out) {
-			fmt.Println(buf.String())
-			t.Errorf("Translate(%s) -> %s, want %s", tc.formName, dump.OctetString(bytes.NewReader(tc.inp)), dump.OctetString(buf))
 		}
 	}
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
