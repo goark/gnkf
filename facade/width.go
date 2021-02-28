@@ -78,14 +78,19 @@ func newWidthCmd(ui *rwi.RWI) *cobra.Command {
 		},
 	}
 	widthCmd.Flags().StringP("file", "f", "", "path of input text file")
+	_ = widthCmd.MarkFlagFilename("file")
 	widthCmd.Flags().StringP("output", "o", "", "path of output file")
+	_ = widthCmd.MarkFlagFilename("output")
 	widthCmd.Flags().StringP("conversion-form", "c", "fold", fmt.Sprintf("conversion form: [%s]", strings.Join(width.FormList(), "|")))
+	_ = widthCmd.RegisterFlagCompletionFunc("conversion-form", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return width.FormList(), cobra.ShellCompDirectiveDefault
+	})
 	widthCmd.Flags().BoolP("remove-bom", "b", false, "remove BOM character")
 
 	return widthCmd
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

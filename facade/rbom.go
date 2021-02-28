@@ -63,12 +63,14 @@ func newRemoveBomCmd(ui *rwi.RWI) *cobra.Command {
 		},
 	}
 	rbomCmd.Flags().StringP("file", "f", "", "path of input text file")
+	_ = rbomCmd.MarkFlagFilename("file")
 	rbomCmd.Flags().StringP("output", "o", "", "path of output file")
+	_ = rbomCmd.MarkFlagFilename("output")
 
 	return rbomCmd
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
