@@ -22,6 +22,10 @@ var formNamesMap = map[string]Form{
 	"chokuon":  Chokuon,
 }
 
+func (f Form) String() string {
+	return formName(f)
+}
+
 func formName(f Form) string {
 	for key, value := range formNamesMap {
 		if value == f {
@@ -48,7 +52,7 @@ func FormOf(name string) (Form, error) {
 	return Form(0), errs.Wrap(ecode.ErrInvalidKanaForm, errs.WithContext("name", name))
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

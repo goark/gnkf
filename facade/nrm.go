@@ -82,15 +82,20 @@ func newNormCmd(ui *rwi.RWI) *cobra.Command {
 		},
 	}
 	normCmd.Flags().StringP("file", "f", "", "path of input text file")
+	_ = normCmd.MarkFlagFilename("file")
 	normCmd.Flags().StringP("output", "o", "", "path of output file")
+	_ = normCmd.MarkFlagFilename("output")
 	normCmd.Flags().StringP("norm-form", "n", "nfc", fmt.Sprintf("Unicode normalization form: [%s]", strings.Join(nrm.FormList(), "|")))
+	_ = normCmd.RegisterFlagCompletionFunc("norm-form", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return nrm.FormList(), cobra.ShellCompDirectiveDefault
+	})
 	normCmd.Flags().BoolP("kangxi-radicals", "k", false, "normalize kangxi radicals only (with nfkc or nfkd form)")
 	normCmd.Flags().BoolP("remove-bom", "b", false, "remove BOM character")
 
 	return normCmd
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

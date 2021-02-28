@@ -108,7 +108,9 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 		},
 	}
 	encCmd.Flags().StringP("file", "f", "", "path of input text file")
+	_ = encCmd.MarkFlagFilename("file")
 	encCmd.Flags().StringP("output", "o", "", "path of output file")
+	_ = encCmd.MarkFlagFilename("output")
 	encCmd.Flags().StringP("src-encoding", "s", "utf-8", "character encoding name of source text")
 	encCmd.Flags().StringP("dst-encoding", "d", "utf-8", "character encoding name of output text")
 	encCmd.Flags().BoolP("guess", "g", false, "guess character encoding of source text")
@@ -117,7 +119,7 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 	return encCmd
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
