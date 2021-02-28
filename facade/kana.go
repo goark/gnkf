@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gnkf/kana"
+	"github.com/spiegel-im-spiegel/gnkf/newline"
 	"github.com/spiegel-im-spiegel/gnkf/rbom"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
@@ -34,9 +35,13 @@ func newKanaCmd(ui *rwi.RWI) *cobra.Command {
 			if err != nil {
 				return debugPrint(ui, errs.New("Error in --output option", errs.WithCause(err)))
 			}
-			form, err := cmd.Flags().GetString("conversion-form")
+			formName, err := cmd.Flags().GetString("conversion-form")
 			if err != nil {
 				return debugPrint(ui, errs.New("Error in --conversion-form option", errs.WithCause(err)))
+			}
+			form, err := kana.FormOf(formName)
+			if err != nil {
+				return debugPrint(ui, err)
 			}
 			foldFlag, err := cmd.Flags().GetBool("fold")
 			if err != nil {
@@ -86,15 +91,20 @@ func newKanaCmd(ui *rwi.RWI) *cobra.Command {
 		},
 	}
 	kanaCmd.Flags().StringP("file", "f", "", "path of input text file")
+	_ = kanaCmd.MarkFlagFilename("file")
 	kanaCmd.Flags().StringP("output", "o", "", "path of output file")
+	_ = kanaCmd.MarkFlagFilename("output")
 	kanaCmd.Flags().StringP("conversion-form", "c", "katakana", fmt.Sprintf("conversion form: [%s]", strings.Join(kana.FormList(), "|")))
+	_ = kanaCmd.RegisterFlagCompletionFunc("conversion-form", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return newline.FormList(), cobra.ShellCompDirectiveNoFileComp
+	})
 	kanaCmd.Flags().BoolP("fold", "", false, "convert character width by fold form")
 	kanaCmd.Flags().BoolP("remove-bom", "b", false, "remove BOM character")
 
 	return kanaCmd
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

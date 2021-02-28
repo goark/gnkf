@@ -8,17 +8,17 @@ import (
 
 func ExampleConvertString() {
 	txt := "あいうえおわゐゑをんゔゕゖゝゞアイウエオワヰヱヲンヴヵヶヽヾ"
-	str, err := kana.ConvertString("hiragana", txt, false)
+	str, err := kana.ConvertString(kana.Hiragana, txt, false)
 	if err != nil {
 		return
 	}
 	fmt.Println(str)
-	str, err = kana.ConvertString("katakana", txt, false)
+	str, err = kana.ConvertString(kana.Katakana, txt, false)
 	if err != nil {
 		return
 	}
 	fmt.Println(str)
-	str, err = kana.ConvertString("chokuon", txt, false)
+	str, err = kana.ConvertString(kana.Chokuon, txt, false)
 	if err != nil {
 		return
 	}
@@ -29,7 +29,7 @@ func ExampleConvertString() {
 	//あいうえおわゐゑをんゔかけゝゞアイウエオワヰヱヲンヴカケヽヾ
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

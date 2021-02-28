@@ -63,13 +63,18 @@ func newNwlnCmd(ui *rwi.RWI) *cobra.Command {
 		},
 	}
 	nwlnCmd.Flags().StringP("file", "f", "", "path of input text file")
+	_ = nwlnCmd.MarkFlagFilename("file")
 	nwlnCmd.Flags().StringP("output", "o", "", "path of output file")
+	_ = nwlnCmd.MarkFlagFilename("output")
 	nwlnCmd.Flags().StringP("newline-form", "n", "lf", fmt.Sprintf("newline form: [%s]", strings.Join(newline.FormList(), "|")))
+	_ = nwlnCmd.RegisterFlagCompletionFunc("newline-form", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return newline.FormList(), cobra.ShellCompDirectiveNoFileComp
+	})
 
 	return nwlnCmd
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

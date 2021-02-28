@@ -47,6 +47,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 		newKanaCmd(ui),
 		newBase64Cmd(ui),
 		newRemoveBomCmd(ui),
+		newCompletionCmd(ui),
 	)
 
 	//global options
@@ -87,7 +88,7 @@ func Execute(ui *rwi.RWI, args []string) (exit exitcode.ExitCode) {
 	return
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

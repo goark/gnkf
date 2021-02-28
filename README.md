@@ -5,6 +5,8 @@
 [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/spiegel-im-spiegel/gnkf/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/spiegel-im-spiegel/gnkf.svg)](https://github.com/spiegel-im-spiegel/gnkf/releases/latest)
 
+This package is required Go 1.16 or later.
+
 ## Download and Build
 
 ```
@@ -27,6 +29,7 @@ Usage:
 
 Available Commands:
   base64      Encode/Decode BASE64
+  completion  Generate completion script
   dump        Hexadecimal view of octet data stream
   enc         Convert character encoding of the text
   guess       Guess character encoding of the text

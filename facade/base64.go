@@ -74,7 +74,9 @@ func newBase64Cmd(ui *rwi.RWI) *cobra.Command {
 		},
 	}
 	base64Cmd.Flags().StringP("file", "f", "", "path of input text file")
+	_ = base64Cmd.MarkFlagFilename("file")
 	base64Cmd.Flags().StringP("output", "o", "", "path of output file")
+	_ = base64Cmd.MarkFlagFilename("output")
 	base64Cmd.Flags().BoolP("decode", "d", false, "decode BASE64 string")
 	base64Cmd.Flags().BoolP("no-padding", "p", false, "no padding")
 	base64Cmd.Flags().BoolP("for-url", "u", false, "encoding/decoding defined in RFC 4648")
@@ -82,7 +84,7 @@ func newBase64Cmd(ui *rwi.RWI) *cobra.Command {
 	return base64Cmd
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
