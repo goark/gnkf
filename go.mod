@@ -8,5 +8,5 @@ require (
 	github.com/spiegel-im-spiegel/csvdata v0.1.0
 	github.com/spiegel-im-spiegel/errs v1.0.2
 	github.com/spiegel-im-spiegel/gocli v0.10.4
-	golang.org/x/text v0.3.5
+	golang.org/x/text v0.3.6
 )
