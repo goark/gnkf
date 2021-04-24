@@ -18,6 +18,10 @@ func newBase64Cmd(ui *rwi.RWI) *cobra.Command {
 		Long:    "Encode/Decode BASE64.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//Options
+			out, err := cmd.Flags().GetString("output")
+			if err != nil {
+				return debugPrint(ui, errs.New("Error in --output option", errs.WithCause(err)))
+			}
 			decodeFlag, err := cmd.Flags().GetBool("decode")
 			if err != nil {
 				return debugPrint(ui, errs.New("Error in --decode option", errs.WithCause(err)))
@@ -42,18 +46,31 @@ func newBase64Cmd(ui *rwi.RWI) *cobra.Command {
 				r = file
 			}
 
+			//Output stream
+			w := ui.Writer()
+			if len(out) > 0 {
+				file, err := os.Create(out)
+				if err != nil {
+					return debugPrint(ui, errs.Wrap(err, errs.WithContext("output", out)))
+				}
+				defer file.Close()
+				w = file
+			}
+
 			//Run command
 			if decodeFlag {
-				err = b64.Decode(forURL, noPadding, r, os.Stdout)
+				err = b64.Decode(forURL, noPadding, r, w)
 			} else {
-				err = b64.Encode(forURL, noPadding, r, os.Stdout)
+				err = b64.Encode(forURL, noPadding, r, w)
 			}
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err))
+				return debugPrint(ui, errs.Wrap(err, errs.WithContext("output", out)))
 			}
 			return nil
 		},
 	}
+	base64Cmd.Flags().StringP("output", "o", "", "path of output file")
+	_ = base64Cmd.MarkFlagFilename("output")
 	base64Cmd.Flags().BoolP("decode", "d", false, "decode BASE64 string")
 	base64Cmd.Flags().BoolP("no-padding", "p", false, "no padding")
 	base64Cmd.Flags().BoolP("for-url", "u", false, "encoding/decoding defined in RFC 4648")
