@@ -7,10 +7,10 @@
 
 This package is required Go 1.16 or later.
 
-## Download and Build
+## Build and Install
 
 ```
-$ go get github.com/spiegel-im-spiegel/gnkf@latest
+$ go install github.com/spiegel-im-spiegel/gnkf@latest
 ```
 
 ### Binaries
@@ -33,6 +33,7 @@ Available Commands:
   dump        Hexadecimal view of octet data stream
   enc         Convert character encoding of the text
   guess       Guess character encoding of the text
+  hash        Print or check hash value
   help        Help about any command
   kana        Convert kana characters in the text
   newline     Convert newline form in the text
@@ -259,6 +260,40 @@ SGVsbG8gV29ybGQK
 
 $ echo SGVsbG8gV29ybGQK | gnkf b64 -d
 Hello World
+```
+
+### gnkf hash command
+
+```
+$ gnkf base64 -h
+Print or check hash value.
+  Support algorithm:
+  MD5, SHA-1, SHA-224, SHA-256, SHA-384, SHA-512, SHA-512/224, SHA-512/256
+
+Usage:
+  gnkf hash [flags] [file]
+
+Aliases:
+  hash, h
+
+Flags:
+  -a, --algorithm string   hash algorithm (default "SHA-256")
+  -c, --check              don't fail or report status for missing files
+  -h, --help               help for hash
+      --ignore-missing     don't fail or report status for missing files (with check option)
+      --quiet              don't print OK for each successfully verified file (with check option)
+
+Global Flags:
+      --debug   for debug
+
+$ echo Hello World | gnkf h
+d2a84f4b8b650937ec8f73cd8be2c74add5a911ba64df27458ed8229da804a26  -
+
+$ gnkf h hash/testdata/null.dat
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  hash/testdata/null.dat
+
+$ gnkf h hash/testdata/null.dat | gnkf h -c
+hash/testdata/null.dat: OK
 ```
 
 ### gnkf remove-bom command

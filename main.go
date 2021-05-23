@@ -1,6 +1,10 @@
 package main
 
 import (
+	_ "crypto/md5"
+	_ "crypto/sha1"
+	_ "crypto/sha256"
+	_ "crypto/sha512"
 	"os"
 
 	"github.com/spiegel-im-spiegel/gnkf/facade"
@@ -18,7 +22,7 @@ func main() {
 	).Exit()
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

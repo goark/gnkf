@@ -1,46 +1,26 @@
 package ecode
 
-import "fmt"
+import "errors"
 
-//ECode is error codes for books-data
-type ECode int
-
-const (
-	ErrNullPointer ECode = iota + 1
-	ErrNoCommand
-	ErrNoData
-	ErrCannotDetect
-	ErrInvalidUTF8Text
-	ErrNotSuppotEncoding
-	ErrInvalidEncoding
-	ErrInvalidNormForm
-	ErrInvalidNewlineForm
-	ErrInvalidWidthForm
-	ErrInvalidKanaForm
+var (
+	ErrNullPointer          = errors.New("null reference instance")
+	ErrNoCommand            = errors.New("no command")
+	ErrNoData               = errors.New("no data")
+	ErrCannotDetect         = errors.New("cannot detect character encoding")
+	ErrInvalidUTF8Text      = errors.New("invalid UTF-8 text")
+	ErrNotSuppotEncoding    = errors.New("not support IANA encoding name")
+	ErrInvalidEncoding      = errors.New("text is invalid encoding")
+	ErrInvalidNormForm      = errors.New("invalid Unicode normalization form")
+	ErrInvalidNewlineForm   = errors.New("invalid newline form")
+	ErrInvalidWidthForm     = errors.New("invalid width form")
+	ErrInvalidKanaForm      = errors.New("invalid kana form")
+	ErrInvalidHashAlg       = errors.New("not support hash algorithm")
+	ErrImproperlyHashFormat = errors.New("improperly formatted hash string")
+	ErrUnmatchHashString    = errors.New("hash value did NOT match")
+	ErrInvalidChekerFormat  = errors.New("invalid checker format")
 )
 
-var errMessages = map[ECode]string{
-	ErrNullPointer:        "Null reference instance",
-	ErrNoCommand:          "No command",
-	ErrNoData:             "No data",
-	ErrCannotDetect:       "Cannot detect character encoding",
-	ErrInvalidUTF8Text:    "Invalid UTF-8 text",
-	ErrNotSuppotEncoding:  "Not Support IANA encoding name",
-	ErrInvalidEncoding:    "Text is invalid encoding",
-	ErrInvalidNormForm:    "Invalid Unicode normalization form",
-	ErrInvalidNewlineForm: "Invalid newline form",
-	ErrInvalidWidthForm:   "Invalid width form",
-	ErrInvalidKanaForm:    "Invalid kana form",
-}
-
-func (e ECode) Error() string {
-	if s, ok := errMessages[e]; ok {
-		return s
-	}
-	return fmt.Sprintf("unknown error (%d)", int(e))
-}
-
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

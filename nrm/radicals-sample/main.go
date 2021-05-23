@@ -4,99 +4,37 @@ package main
 
 import (
 	_ "embed"
-	"encoding/csv"
 	"errors"
 	"fmt"
 	"io"
-	"strconv"
 	"strings"
 
+	"github.com/spiegel-im-spiegel/csvdata"
 	"golang.org/x/text/unicode/norm"
 )
 
 //go:embed equivalent-unified-ideograph.csv
 var kanjiList string
 
-var (
-	ErrNoData        = errors.New("no data")
-	ErrInvalidRecord = errors.New("invalid record")
-)
-
-//Reader is class of CSV reader
-type Reader struct {
-	reader        *csv.Reader
-	cols          int
-	headerFlag    bool
-	headerStrings []string
-}
-
-//New function creates a new Reader instance.
-func New(r io.Reader, cols int, headerFlag bool) *Reader {
-	cr := csv.NewReader(r)
-	cr.Comma = ','
-	cr.LazyQuotes = true       // a quote may appear in an unquoted field and a non-doubled quote may appear in a quoted field.
-	cr.TrimLeadingSpace = true // leading
-	return &Reader{reader: cr, cols: cols, headerFlag: headerFlag}
-}
-
-//readRecord method returns a new record.
-func (r *Reader) readRecord() ([]string, error) {
-	elms, err := r.reader.Read()
-	if err != nil {
-		if errors.Is(err, io.EOF) {
-			return nil, err
-		}
-		return nil, ErrInvalidRecord
-	}
-	if len(elms) < r.cols {
-		return nil, ErrInvalidRecord
-	}
-	return elms, nil
-}
-
-//Header method returns header strings.
-func (r *Reader) Header() ([]string, error) {
-	var err error
-	if r.headerFlag {
-		r.headerFlag = false
-		r.headerStrings, err = r.readRecord()
-	}
-	return r.headerStrings, err
-}
-
-//Next method returns a next record.
-func (r *Reader) Next() ([]string, error) {
-	if r.headerFlag {
-		if _, err := r.Header(); err != nil {
-			return nil, err
-		}
-	}
-	elms, err := r.readRecord()
-	return elms, err
-}
-
 func readData() (map[rune]rune, error) {
 	kanjiMap := map[rune]rune{}
-	cr := New(strings.NewReader(kanjiList), 3, true)
+	cr := csvdata.New(strings.NewReader(kanjiList), true).WithFieldsPerRecord(3)
 	for {
-		elms, err := cr.Next()
-		if err != nil {
+		if err := cr.Next(); err != nil {
 			if errors.Is(err, io.EOF) {
 				break
 			}
 			return nil, err
 		}
-		key, err := strconv.ParseUint(strings.TrimSpace(elms[0]), 16, 32)
+		key, err := cr.ColumnInt64("radicals", 16)
 		if err != nil {
 			return nil, err
 		}
-		value, err := strconv.ParseUint(strings.TrimSpace(elms[1]), 16, 32)
+		value, err := cr.ColumnInt64("normalize", 16)
 		if err != nil {
 			return nil, err
 		}
-		if len(elms) > 2 {
-			kanjiMap[rune(key)] = rune(value)
-		}
+		kanjiMap[rune(key)] = rune(value)
 	}
 	return kanjiMap, nil
 }

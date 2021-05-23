@@ -12,16 +12,12 @@ import (
 //newNormCmd returns cobra.Command instance for show sub-command
 func newBase64Cmd(ui *rwi.RWI) *cobra.Command {
 	base64Cmd := &cobra.Command{
-		Use:     "base64",
+		Use:     "base64 [flags] [file]",
 		Aliases: []string{"b64"},
 		Short:   "Encode/Decode BASE64",
 		Long:    "Encode/Decode BASE64.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//Options
-			inp, err := cmd.Flags().GetString("file")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --file option", errs.WithCause(err)))
-			}
 			out, err := cmd.Flags().GetString("output")
 			if err != nil {
 				return debugPrint(ui, errs.New("Error in --output option", errs.WithCause(err)))
@@ -35,16 +31,16 @@ func newBase64Cmd(ui *rwi.RWI) *cobra.Command {
 				return debugPrint(ui, errs.New("Error in --no-padding option", errs.WithCause(err)))
 			}
 			forURL, err := cmd.Flags().GetBool("for-url")
-
 			if err != nil {
 				return debugPrint(ui, errs.New("Error in --for-url option", errs.WithCause(err)))
 			}
+
 			//Input stream
 			r := ui.Reader()
-			if len(inp) > 0 {
-				file, err := os.Open(inp)
+			if len(args) > 0 {
+				file, err := os.Open(args[0])
 				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp)))
+					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", args[0])))
 				}
 				defer file.Close()
 				r = file
@@ -68,13 +64,11 @@ func newBase64Cmd(ui *rwi.RWI) *cobra.Command {
 				err = b64.Encode(forURL, noPadding, r, w)
 			}
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+				return debugPrint(ui, errs.Wrap(err, errs.WithContext("output", out)))
 			}
 			return nil
 		},
 	}
-	base64Cmd.Flags().StringP("file", "f", "", "path of input text file")
-	_ = base64Cmd.MarkFlagFilename("file")
 	base64Cmd.Flags().StringP("output", "o", "", "path of output file")
 	_ = base64Cmd.MarkFlagFilename("output")
 	base64Cmd.Flags().BoolP("decode", "d", false, "decode BASE64 string")

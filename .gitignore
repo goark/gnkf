@@ -16,3 +16,4 @@
 
 # Other files and directories
 dist/
+.task/
