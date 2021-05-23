@@ -12,7 +12,7 @@ import (
 //newNormCmd returns cobra.Command instance for show sub-command
 func newBase64Cmd(ui *rwi.RWI) *cobra.Command {
 	base64Cmd := &cobra.Command{
-		Use:     "base64",
+		Use:     "base64 [flags] [file]",
 		Aliases: []string{"b64"},
 		Short:   "Encode/Decode BASE64",
 		Long:    "Encode/Decode BASE64.",
@@ -31,10 +31,10 @@ func newBase64Cmd(ui *rwi.RWI) *cobra.Command {
 				return debugPrint(ui, errs.New("Error in --no-padding option", errs.WithCause(err)))
 			}
 			forURL, err := cmd.Flags().GetBool("for-url")
-
 			if err != nil {
 				return debugPrint(ui, errs.New("Error in --for-url option", errs.WithCause(err)))
 			}
+
 			//Input stream
 			r := ui.Reader()
 			if len(args) > 0 {
