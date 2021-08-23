@@ -8,6 +8,7 @@ require (
 	github.com/spiegel-im-spiegel/csvdata v0.1.2
 	github.com/spiegel-im-spiegel/errs v1.0.5
 	github.com/spiegel-im-spiegel/gocli v0.10.5
+	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
 	golang.org/x/text v0.3.7
 )
 

@@ -262,10 +262,39 @@ $ echo SGVsbG8gV29ybGQK | gnkf b64 -d
 Hello World
 ```
 
+### gnkf bcrypt command
+
+```
+$ gnkf bcrypt -h
+Hash and compare by BCrypt.
+
+Usage:
+  gnkf bcrypt [flags] string [string...]
+
+Aliases:
+  bcrypt, bc
+
+Flags:
+      --compare string   compare to BCrypt hashed string
+  -c, --cost int         BCrypt cost (4-31) (default 10)
+  -h, --help             help for bcrypt
+
+Global Flags:
+      --debug   for debug
+
+$ gnkf bc password
+$2a$10$vvbBuQoVR9AFis6J4xtZ0espSfe976pZ1Em669nhdg2loAm2Yjxl2
+
+
+$ gnkf bc --compare '$2a$10$vvbBuQoVR9AFis6J4xtZ0espSfe976pZ1Em669nhdg2loAm2Yjxl2' password
+compare BCrypt hashed string '$2a$10$vvbBuQoVR9AFis6J4xtZ0espSfe976pZ1Em669nhdg2loAm2Yjxl2' to...
+password : match!
+```
+
 ### gnkf hash command
 
 ```
-$ gnkf base64 -h
+$ gnkf hash -h
 Print or check hash value.
   Support algorithm:
   MD5, SHA-1, SHA-224, SHA-256, SHA-384, SHA-512, SHA-512/224, SHA-512/256
