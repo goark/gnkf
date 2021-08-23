@@ -49,6 +49,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 		newRemoveBomCmd(ui),
 		newCompletionCmd(ui),
 		newhashCmd(ui),
+		newBCryptCmd(ui),
 	)
 
 	//global options
