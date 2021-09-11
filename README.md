@@ -29,6 +29,7 @@ Usage:
 
 Available Commands:
   base64      Encode/Decode BASE64
+  bcrypt      Hash and compare by BCrypt
   completion  Generate completion script
   dump        Hexadecimal view of octet data stream
   enc         Convert character encoding of the text
