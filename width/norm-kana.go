@@ -54,11 +54,31 @@ func NewReplaceerkanaNFD() *strings.Replacer {
 }
 
 var normKatakanaMap2 = map[string]string{
-	string([]rune{'ヮ'}): string([]rune{'ﾜ'}),
-	string([]rune{'ヰ'}): string([]rune{'ｲ'}),
-	string([]rune{'ヱ'}): string([]rune{'ｴ'}),
-	string([]rune{'ヵ'}): string([]rune{'ｶ'}),
-	string([]rune{'ヶ'}): string([]rune{'ｹ'}),
+	string([]rune{'ヮ'}):     string([]rune{'ﾜ'}),
+	string([]rune{'ヰ'}):     string([]rune{'ｲ'}),
+	string([]rune{'ヱ'}):     string([]rune{'ｴ'}),
+	string([]rune{'ヵ'}):     string([]rune{'ｶ'}),
+	string([]rune{'ヶ'}):     string([]rune{'ｹ'}),
+	string([]rune{'ㇰ'}):     string([]rune{'ｸ'}),
+	string([]rune{'ㇱ'}):     string([]rune{'ｼ'}),
+	string([]rune{'ㇲ'}):     string([]rune{'ｽ'}),
+	string([]rune{'ㇳ'}):     string([]rune{'ﾄ'}),
+	string([]rune{'ㇴ'}):     string([]rune{'ﾇ'}),
+	string([]rune{'ㇵ'}):     string([]rune{'ﾊ'}),
+	string([]rune{'ㇶ'}):     string([]rune{'ﾋ'}),
+	string([]rune{'ㇷ'}):     string([]rune{'ﾌ'}),
+	string([]rune{'ㇸ'}):     string([]rune{'ﾍ'}),
+	string([]rune{'ㇹ'}):     string([]rune{'ﾎ'}),
+	string([]rune{'ㇺ'}):     string([]rune{'ﾑ'}),
+	string([]rune{'ㇻ'}):     string([]rune{'ﾗ'}),
+	string([]rune{'ㇼ'}):     string([]rune{'ﾘ'}),
+	string([]rune{'ㇽ'}):     string([]rune{'ﾙ'}),
+	string([]rune{'ㇾ'}):     string([]rune{'ﾚ'}),
+	string([]rune{'ㇿ'}):     string([]rune{'ﾛ'}),
+	string([]rune{0x1b164}): string([]rune{'ｲ'}),
+	string([]rune{0x1b165}): string([]rune{'ｴ'}),
+	string([]rune{0x1b166}): string([]rune{'ｦ'}),
+	string([]rune{0x1b167}): string([]rune{'ﾝ'}),
 }
 
 //NewReplaceerHalfWidthkana returns strings.Replacer instance for complement half-width katakana
@@ -70,7 +90,7 @@ func NewReplaceerHalfWidthkana() *strings.Replacer {
 	return strings.NewReplacer(ss...)
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
