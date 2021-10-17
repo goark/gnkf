@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/width"
+	"github.com/spiegel-im-spiegel/kkconv"
 )
 
 //Convert function converts kana character in text stream.
@@ -15,34 +15,23 @@ func Convert(f Form, writer io.Writer, txt io.Reader, foldFlag bool) error {
 	if _, err := buf.ReadFrom(txt); err != nil {
 		return errs.Wrap(err)
 	}
-	str, err := ConvertString(f, buf.String(), foldFlag)
-	if err != nil {
-		return errs.Wrap(err)
-	}
-	if _, err := strings.NewReader(str).WriteTo(writer); err != nil {
+	if _, err := strings.NewReader(ConvertString(f, buf.String(), foldFlag)).WriteTo(writer); err != nil {
 		return errs.Wrap(err)
 	}
 	return nil
 }
 
 //ConvertString function converts kana character in text string.
-func ConvertString(f Form, txt string, foldFlag bool) (string, error) {
-	if foldFlag {
-		s, err := width.ConvertString("fold", txt)
-		if err != nil {
-			return "", errs.Wrap(err, errs.WithContext("form", f.String()))
-		}
-		txt = s
-	}
+func ConvertString(f Form, txt string, foldFlag bool) string {
 	switch f {
 	case Hiragana:
-		return ReplaceHiragana(txt), nil
+		return kkconv.Hiragana(txt, foldFlag)
 	case Katakana:
-		return ReplaceKatakana(txt), nil
+		return kkconv.Katakana(txt, foldFlag)
 	case Chokuon:
-		return ReplaceChokuon(txt), nil
+		return kkconv.Chokuon(txt, foldFlag)
 	default:
-		return txt, nil
+		return txt
 	}
 }
 

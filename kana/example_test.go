@@ -8,21 +8,9 @@ import (
 
 func ExampleConvertString() {
 	txt := "あいうえおわゐゑをんゔゕゖゝゞアイウエオワヰヱヲンヴヵヶヽヾ"
-	str, err := kana.ConvertString(kana.Hiragana, txt, false)
-	if err != nil {
-		return
-	}
-	fmt.Println(str)
-	str, err = kana.ConvertString(kana.Katakana, txt, false)
-	if err != nil {
-		return
-	}
-	fmt.Println(str)
-	str, err = kana.ConvertString(kana.Chokuon, txt, false)
-	if err != nil {
-		return
-	}
-	fmt.Println(str)
+	fmt.Println(kana.ConvertString(kana.Hiragana, txt, false))
+	fmt.Println(kana.ConvertString(kana.Katakana, txt, false))
+	fmt.Println(kana.ConvertString(kana.Chokuon, txt, false))
 	//Output:
 	//あいうえおわゐゑをんゔゕゖゝゞあいうえおわゐゑをんゔゕゖゝゞ
 	//アイウエオワヰヱヲンヴヵヶヽヾアイウエオワヰヱヲンヴヵヶヽヾ
