@@ -1,15 +1,15 @@
-module github.com/spiegel-im-spiegel/gnkf
+module github.com/goark/gnkf
 
-go 1.17
+go 1.18
 
 require (
+	github.com/goark/csvdata v0.5.0
+	github.com/goark/errs v1.1.0
+	github.com/goark/gocli v0.12.0
+	github.com/goark/kkconv v0.3.0
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca
-	github.com/spf13/cobra v1.2.1
-	github.com/spiegel-im-spiegel/csvdata v0.3.0
-	github.com/spiegel-im-spiegel/errs v1.0.5
-	github.com/spiegel-im-spiegel/gocli v0.11.0
-	github.com/spiegel-im-spiegel/kkconv v0.2.0
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
+	github.com/spf13/cobra v1.4.0
+	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd
 	golang.org/x/text v0.3.7
 )
 

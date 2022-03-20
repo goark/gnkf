@@ -5,10 +5,10 @@ import (
 	"io"
 	"os"
 
+	"github.com/goark/errs"
+	"github.com/goark/gnkf/rbom"
+	"github.com/goark/gocli/rwi"
 	"github.com/spf13/cobra"
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/rbom"
-	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
 //newNormCmd returns cobra.Command instance for show sub-command

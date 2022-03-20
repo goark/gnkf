@@ -5,8 +5,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/kkconv"
+	"github.com/goark/errs"
+	"github.com/goark/kkconv"
 )
 
 //Convert function converts kana character in text stream.

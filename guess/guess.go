@@ -5,9 +5,9 @@ import (
 	"io"
 	"sort"
 
+	"github.com/goark/errs"
+	"github.com/goark/gnkf/ecode"
 	"github.com/saintfish/chardet"
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/ecode"
 )
 
 //Encoding detects guesses of character encoding name from byte stream

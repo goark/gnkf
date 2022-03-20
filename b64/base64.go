@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"io"
 
-	"github.com/spiegel-im-spiegel/errs"
+	"github.com/goark/errs"
 )
 
 //Encode outputs base64 encoding string from raw data.

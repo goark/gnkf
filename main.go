@@ -7,8 +7,8 @@ import (
 	_ "crypto/sha512"
 	"os"
 
-	"github.com/spiegel-im-spiegel/gnkf/facade"
-	"github.com/spiegel-im-spiegel/gocli/rwi"
+	"github.com/goark/gnkf/facade"
+	"github.com/goark/gocli/rwi"
 )
 
 func main() {

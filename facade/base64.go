@@ -3,10 +3,10 @@ package facade
 import (
 	"os"
 
+	"github.com/goark/errs"
+	"github.com/goark/gnkf/b64"
+	"github.com/goark/gocli/rwi"
 	"github.com/spf13/cobra"
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/b64"
-	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
 //newNormCmd returns cobra.Command instance for show sub-command

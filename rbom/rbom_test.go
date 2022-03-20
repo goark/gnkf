@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/spiegel-im-spiegel/gnkf/rbom"
+	"github.com/goark/gnkf/rbom"
 )
 
 func TestRemoveBomNil(t *testing.T) {

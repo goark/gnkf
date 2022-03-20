@@ -7,11 +7,11 @@ import (
 	"os"
 	"syscall"
 
+	"github.com/goark/errs"
+	"github.com/goark/gnkf/ecode"
+	"github.com/goark/gnkf/hash"
+	"github.com/goark/gocli/rwi"
 	"github.com/spf13/cobra"
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/ecode"
-	"github.com/spiegel-im-spiegel/gnkf/hash"
-	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
 //newhashCmd returns cobra.Command instance for show sub-command

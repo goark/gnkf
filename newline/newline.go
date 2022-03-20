@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"io"
 
-	"github.com/spiegel-im-spiegel/errs"
+	"github.com/goark/errs"
 )
 
 //Convert function convert newline in the text stream.

@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/spiegel-im-spiegel/gnkf/dump"
-	"github.com/spiegel-im-spiegel/gnkf/ecode"
+	"github.com/goark/gnkf/dump"
+	"github.com/goark/gnkf/ecode"
 )
 
 func TestFormList(t *testing.T) {

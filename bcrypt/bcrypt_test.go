@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/spiegel-im-spiegel/gnkf/bcrypt"
+	"github.com/goark/gnkf/bcrypt"
 )
 
 func TestBCrypt(t *testing.T) {

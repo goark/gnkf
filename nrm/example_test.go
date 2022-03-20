@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/spiegel-im-spiegel/gnkf/dump"
-	"github.com/spiegel-im-spiegel/gnkf/nrm"
+	"github.com/goark/gnkf/dump"
+	"github.com/goark/gnkf/nrm"
 )
 
 func ExampleNormalize() {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/spiegel-im-spiegel/gnkf/b64"
+	"github.com/goark/gnkf/b64"
 )
 
 func ExampleEncode() {

@@ -3,8 +3,8 @@ package enc
 import (
 	"io"
 
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/ecode"
+	"github.com/goark/errs"
+	"github.com/goark/gnkf/ecode"
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/unicode"
 )

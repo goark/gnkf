@@ -5,8 +5,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/kkconv/fold"
+	"github.com/goark/errs"
+	"github.com/goark/kkconv/fold"
 	wdth "golang.org/x/text/width"
 )
 
