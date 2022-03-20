@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/ecode"
+	"github.com/goark/errs"
+	"github.com/goark/gnkf/ecode"
 )
 
 //Check function returns true if computed hash value is match.

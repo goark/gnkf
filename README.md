@@ -1,21 +1,23 @@
 # [gnkf] -- Network Kanji Filter by Golang
 
-[![check vulns](https://github.com/spiegel-im-spiegel/gnkf/workflows/vulns/badge.svg)](https://github.com/spiegel-im-spiegel/gnkf/actions)
-[![lint status](https://github.com/spiegel-im-spiegel/gnkf/workflows/lint/badge.svg)](https://github.com/spiegel-im-spiegel/gnkf/actions)
-[![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/spiegel-im-spiegel/gnkf/master/LICENSE)
-[![GitHub release](https://img.shields.io/github/release/spiegel-im-spiegel/gnkf.svg)](https://github.com/spiegel-im-spiegel/gnkf/releases/latest)
+[![check vulns](https://github.com/goark/gnkf/workflows/vulns/badge.svg)](https://github.com/goark/gnkf/actions)
+[![lint status](https://github.com/goark/gnkf/workflows/lint/badge.svg)](https://github.com/goark/gnkf/actions)
+[![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/goark/gnkf/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/goark/gnkf.svg)](https://github.com/goark/gnkf/releases/latest)
 
 This package is required Go 1.16 or later.
+
+**Migrated repository to [github.com/goark/gnkf][gnkf]**
 
 ## Build and Install
 
 ```
-$ go install github.com/spiegel-im-spiegel/gnkf@latest
+$ go install github.com/goark/gnkf@latest
 ```
 
 ### Binaries
 
-See [latest release](https://github.com/spiegel-im-spiegel/gnkf/releases/latest).
+See [latest release](https://github.com/goark/gnkf/releases/latest).
 
 ## Usage
 
@@ -286,7 +288,6 @@ Global Flags:
 $ gnkf bc password
 $2a$10$vvbBuQoVR9AFis6J4xtZ0espSfe976pZ1Em669nhdg2loAm2Yjxl2
 
-
 $ gnkf bc --compare '$2a$10$vvbBuQoVR9AFis6J4xtZ0espSfe976pZ1Em669nhdg2loAm2Yjxl2' password
 compare BCrypt hashed string '$2a$10$vvbBuQoVR9AFis6J4xtZ0espSfe976pZ1Em669nhdg2loAm2Yjxl2' to...
 password : match!
@@ -384,4 +385,4 @@ $ echo ペンギン | gnkf dump --unicode
 
 [![dependency.png](./dependency.png)](./dependency.png)
 
-[gnkf]: https://github.com/spiegel-im-spiegel/gnkf "spiegel-im-spiegel/gnkf: Network Kanji Filter by Golang"
+[gnkf]: https://github.com/goark/gnkf "goark/gnkf: Network Kanji Filter by Golang"

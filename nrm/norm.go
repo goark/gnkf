@@ -3,7 +3,7 @@ package nrm
 import (
 	"io"
 
-	"github.com/spiegel-im-spiegel/errs"
+	"github.com/goark/errs"
 	"golang.org/x/text/unicode/norm"
 )
 

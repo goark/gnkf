@@ -5,12 +5,12 @@ import (
 	"io"
 	"os"
 
+	"github.com/goark/errs"
+	"github.com/goark/gnkf/enc"
+	"github.com/goark/gnkf/guess"
+	"github.com/goark/gnkf/rbom"
+	"github.com/goark/gocli/rwi"
 	"github.com/spf13/cobra"
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/enc"
-	"github.com/spiegel-im-spiegel/gnkf/guess"
-	"github.com/spiegel-im-spiegel/gnkf/rbom"
-	"github.com/spiegel-im-spiegel/gocli/rwi"
 	"golang.org/x/text/encoding/unicode"
 )
 

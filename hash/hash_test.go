@@ -13,7 +13,7 @@ import (
 
 	"testing"
 
-	"github.com/spiegel-im-spiegel/gnkf/ecode"
+	"github.com/goark/gnkf/ecode"
 )
 
 func TestAlgorithmList(t *testing.T) {

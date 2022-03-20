@@ -3,7 +3,7 @@ package kana_test
 import (
 	"fmt"
 
-	"github.com/spiegel-im-spiegel/gnkf/kana"
+	"github.com/goark/gnkf/kana"
 )
 
 func ExampleConvertString() {

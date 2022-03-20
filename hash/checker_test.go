@@ -7,7 +7,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/spiegel-im-spiegel/gnkf/ecode"
+	"github.com/goark/gnkf/ecode"
 )
 
 const (

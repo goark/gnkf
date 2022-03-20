@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"runtime"
 
+	"github.com/goark/errs"
+	"github.com/goark/gnkf/ecode"
+	"github.com/goark/gocli/exitcode"
+	"github.com/goark/gocli/rwi"
 	"github.com/spf13/cobra"
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/ecode"
-	"github.com/spiegel-im-spiegel/gocli/exitcode"
-	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
 var (

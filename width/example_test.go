@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spiegel-im-spiegel/gnkf/dump"
-	"github.com/spiegel-im-spiegel/gnkf/width"
+	"github.com/goark/gnkf/dump"
+	"github.com/goark/gnkf/width"
 )
 
 func ExampleConvertString() {

@@ -7,8 +7,8 @@ import (
 	"io"
 	"unicode/utf8"
 
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/ecode"
+	"github.com/goark/errs"
+	"github.com/goark/gnkf/ecode"
 )
 
 //Octet output io.Writer hex-dump of byte stream.

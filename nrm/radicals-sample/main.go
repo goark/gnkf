@@ -1,3 +1,4 @@
+//go:build run
 // +build run
 
 package main
@@ -9,7 +10,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/spiegel-im-spiegel/csvdata"
+	"github.com/goark/csvdata"
 	"golang.org/x/text/unicode/norm"
 )
 

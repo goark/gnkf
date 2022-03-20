@@ -1,7 +1,7 @@
 package bcrypt
 
 import (
-	"github.com/spiegel-im-spiegel/errs"
+	"github.com/goark/errs"
 	"golang.org/x/crypto/bcrypt"
 )
 

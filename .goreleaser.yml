@@ -1,7 +1,7 @@
 project_name: gnkf
 release:
   github:
-    owner: spiegel-im-spiegel
+    owner: goark
     name: gnkf
 
 builds:
@@ -20,7 +20,7 @@ builds:
   main: ./
   flags:
   - -trimpath
-  ldflags: -s -w -X github.com/spiegel-im-spiegel/gnkf/facade.Version=v{{ .Version }}
+  ldflags: -s -w -X github.com/goark/gnkf/facade.Version=v{{ .Version }}
   binary: gnkf
 
 archives:

@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/spiegel-im-spiegel/gocli/exitcode"
-	"github.com/spiegel-im-spiegel/gocli/rwi"
+	"github.com/goark/gocli/exitcode"
+	"github.com/goark/gocli/rwi"
 )
 
 func TestVersionNormal(t *testing.T) {
@@ -14,7 +14,7 @@ func TestVersionNormal(t *testing.T) {
 		out    string
 		outErr string
 	}{
-		{args: []string{"version"}, out: "", outErr: "gnkf developer version\nrepository: https://github.com/spiegel-im-spiegel/gnkf\n"},
+		{args: []string{"version"}, out: "", outErr: "gnkf developer version\nrepository: https://github.com/goark/gnkf\n"},
 	}
 
 	for _, tc := range testCases {

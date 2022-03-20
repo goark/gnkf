@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/spiegel-im-spiegel/gnkf/guess"
+	"github.com/goark/gnkf/guess"
 )
 
 func ExampleEncoding() {

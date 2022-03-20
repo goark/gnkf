@@ -3,14 +3,14 @@ package facade
 import (
 	"strings"
 
+	"github.com/goark/gocli/rwi"
 	"github.com/spf13/cobra"
-	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
 var (
 	usage = []string{ //output message of version
 		Name + " " + Version,
-		"repository: https://github.com/spiegel-im-spiegel/gnkf",
+		"repository: https://github.com/goark/gnkf",
 	}
 )
 

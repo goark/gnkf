@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/spiegel-im-spiegel/gnkf/dump"
-	"github.com/spiegel-im-spiegel/gnkf/enc"
+	"github.com/goark/gnkf/dump"
+	"github.com/goark/gnkf/enc"
 )
 
 func ExampleConvert() {

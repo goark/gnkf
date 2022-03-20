@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/ecode"
+	"github.com/goark/errs"
+	"github.com/goark/gnkf/ecode"
 )
 
 var (

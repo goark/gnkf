@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/spiegel-im-spiegel/gnkf/dump"
+	"github.com/goark/gnkf/dump"
 )
 
 func ExampleOctet() {

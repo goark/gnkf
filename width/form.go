@@ -3,8 +3,8 @@ package width
 import (
 	"strings"
 
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gnkf/ecode"
+	"github.com/goark/errs"
+	"github.com/goark/gnkf/ecode"
 	wdth "golang.org/x/text/width"
 )
 
