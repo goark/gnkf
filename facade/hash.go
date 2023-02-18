@@ -14,7 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-//newhashCmd returns cobra.Command instance for show sub-command
+// newhashCmd returns cobra.Command instance for show sub-command
 func newhashCmd(ui *rwi.RWI) *cobra.Command {
 	hashCmd := &cobra.Command{
 		Use:     "hash [flags] [file]",
@@ -128,7 +128,7 @@ func (w warn) Error() string {
 
 func appendHashError(wlist []*warn, err error) []*warn {
 	if len(wlist) == 0 {
-		return append(wlist, &warn{count: 1, err: errs.Cause(err)})
+		return append(wlist, &warn{count: 1, err: err})
 	}
 	for i := 0; i < len(wlist); i++ {
 		if errs.Is(err, wlist[i].err) {
@@ -136,7 +136,7 @@ func appendHashError(wlist []*warn, err error) []*warn {
 			return wlist
 		}
 	}
-	return append(wlist, &warn{count: 1, err: errs.Cause(err)})
+	return append(wlist, &warn{count: 1, err: err})
 }
 
 func hashChecks(checkers []hash.Checker, ui *rwi.RWI, ignoreMissingFlag, quietFlag bool) error {
