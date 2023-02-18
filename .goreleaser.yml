@@ -37,7 +37,7 @@ archives:
       {{- if eq .Arch "amd64" }}64bit
       {{- else if eq .Arch "386" }}32bit
       {{- else if eq .Arch "arm64" }}ARM64
-      {{- else if eq .Arch "riscv64" }}RICSV
+      {{- else if eq .Arch "riscv64" }}RISCV
       {{- else }}{{ .Arch }}{{ end }}
   files:
   - LICENSE*
