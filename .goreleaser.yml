@@ -23,22 +23,24 @@ builds:
   ldflags: -s -w -X github.com/goark/gnkf/facade.Version=v{{ .Version }}
   binary: gnkf
 
+source:
+  rlcp: true
 archives:
 -
-  rlcp: true
   format: tar.gz
   format_overrides:
     - goos: windows
       format: zip
   name_template: >-
-      {{ .ProjectName }}_
-      {{- .Version }}_
-      {{- title .Os }}_
-      {{- if eq .Arch "amd64" }}64bit
-      {{- else if eq .Arch "386" }}32bit
-      {{- else if eq .Arch "arm64" }}ARM64
-      {{- else if eq .Arch "riscv64" }}RISCV
-      {{- else }}{{ .Arch }}{{ end }}
+    {{ .Binary }}_
+    {{- .Version }}_
+    {{- if eq .Os "freebsd" }}FreeBSD
+    {{- else }}{{ title .Os }}{{ end }}_
+    {{- if eq .Arch "amd64" }}64bit
+    {{- else if eq .Arch "386" }}32bit
+    {{- else if eq .Arch "arm64" }}ARM64
+    {{- else if eq .Arch "riscv64" }}RISCV
+    {{- else }}{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ end }}
   files:
   - LICENSE*
   - README*
