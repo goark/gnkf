@@ -9,8 +9,8 @@ require (
 	github.com/goark/kkconv v0.3.3
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d
 	github.com/spf13/cobra v1.6.1
-	golang.org/x/crypto v0.6.0
-	golang.org/x/text v0.7.0
+	golang.org/x/crypto v0.17.0
+	golang.org/x/text v0.14.0
 )
 
 require (
