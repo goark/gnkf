@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/goark/errs"
 	"github.com/goark/gnkf/enc"
@@ -18,55 +19,64 @@ var descriptionEnc = `Convert character encoding of the text.
  Using MIME and IANA name as the character encoding name.
  Refer: http://www.iana.org/assignments/character-sets/character-sets.xhtml`
 
-//newEncCmd returns cobra.Command instance for show sub-command
+// newEncCmd returns cobra.Command instance for show sub-command
 func newEncCmd(ui *rwi.RWI) *cobra.Command {
 	encCmd := &cobra.Command{
 		Use:     "enc",
 		Aliases: []string{"encoding", "e"},
 		Short:   "Convert character encoding of the text",
 		Long:    descriptionEnc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			//Options
-			inp, err := cmd.Flags().GetString("file")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --file option", errs.WithCause(err)))
+			inp, ferr := cmd.Flags().GetString("file")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --file option", errs.WithCause(ferr)))
+				return
 			}
-			out, err := cmd.Flags().GetString("output")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --output option", errs.WithCause(err)))
+			out, ferr := cmd.Flags().GetString("output")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --output option", errs.WithCause(ferr)))
+				return
 			}
-			from, err := cmd.Flags().GetString("src-encoding")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --src-encoding option", errs.WithCause(err)))
+			from, ferr := cmd.Flags().GetString("src-encoding")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --src-encoding option", errs.WithCause(ferr)))
+				return
 			}
-			to, err := cmd.Flags().GetString("dst-encoding")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --dst-encoding option", errs.WithCause(err)))
+			to, ferr := cmd.Flags().GetString("dst-encoding")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --dst-encoding option", errs.WithCause(ferr)))
+				return
 			}
-			flagGuess, err := cmd.Flags().GetBool("guess")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --guess option", errs.WithCause(err)))
+			flagGuess, ferr := cmd.Flags().GetBool("guess")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --guess option", errs.WithCause(ferr)))
+				return
 			}
-			rbFlag, err := cmd.Flags().GetBool("remove-bom")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --remove-bom option", errs.WithCause(err)))
+			rbFlag, ferr := cmd.Flags().GetBool("remove-bom")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --remove-bom option", errs.WithCause(ferr)))
+				return
 			}
 
 			//Input stream
 			r := ui.Reader()
 			if len(inp) > 0 {
-				file, err := os.Open(inp)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp)))
+				file, ferr := os.Open(filepath.Clean(inp))
+				if ferr != nil {
+					return debugPrint(ui, errs.Wrap(ferr, errs.WithContext("file", inp)))
 				}
-				defer file.Close()
+				defer func() {
+					err = errs.Join(err, file.Close())
+				}()
 				r = file
 			}
 			if flagGuess {
 				dup := &bytes.Buffer{}
-				ss, err := guess.Encoding(io.TeeReader(r, dup))
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp)))
+				ss, eerr := guess.Encoding(io.TeeReader(r, dup))
+				if eerr != nil {
+					err = debugPrint(ui, errs.Wrap(eerr, errs.WithContext("file", inp)))
+					return
 				}
 				if len(ss) > 0 {
 					from = ss[0]
@@ -77,34 +87,40 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 			//Output stream
 			w := ui.Writer()
 			if len(out) > 0 {
-				file, err := os.Create(out)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("output", out)))
+				file, ferr := os.Create(filepath.Clean(out))
+				if ferr != nil {
+					err = debugPrint(ui, errs.Wrap(ferr, errs.WithContext("output", out)))
+					return
 				}
-				defer file.Close()
+				defer func() {
+					err = errs.Join(err, file.Close())
+				}()
 				w = file
 			}
 
 			//Remove BOM
 			if rbFlag {
-				e, err := enc.Encoding(from)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+				e, eerr := enc.Encoding(from)
+				if eerr != nil {
+					err = debugPrint(ui, errs.Wrap(eerr, errs.WithContext("file", inp), errs.WithContext("output", out)))
+					return
 				}
 				if e == unicode.UTF8 {
-					b, err := rbom.RemoveBom(r)
-					if err != nil {
-						return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+					b, rerr := rbom.RemoveBom(r)
+					if rerr != nil {
+						err = debugPrint(ui, errs.Wrap(rerr, errs.WithContext("file", inp), errs.WithContext("output", out)))
+						return
 					}
 					r = bytes.NewReader(b)
 				}
 			}
 
 			//Run command
-			if err := enc.Convert(to, w, from, r); err != nil {
-				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+			if eerr := enc.Convert(to, w, from, r); eerr != nil {
+				err = debugPrint(ui, errs.Wrap(eerr, errs.WithContext("file", inp), errs.WithContext("output", out)))
+				return
 			}
-			return nil
+			return
 		},
 	}
 	encCmd.Flags().StringP("file", "f", "", "path of input text file")
@@ -119,7 +135,7 @@ func newEncCmd(ui *rwi.RWI) *cobra.Command {
 	return encCmd
 }
 
-/* Copyright 2020-2021 Spiegel
+/* Copyright 2020-2026 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

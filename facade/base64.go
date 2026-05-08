@@ -2,6 +2,7 @@ package facade
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/goark/errs"
 	"github.com/goark/gnkf/b64"
@@ -9,51 +10,61 @@ import (
 	"github.com/spf13/cobra"
 )
 
-//newNormCmd returns cobra.Command instance for show sub-command
+// newNormCmd returns cobra.Command instance for show sub-command
 func newBase64Cmd(ui *rwi.RWI) *cobra.Command {
 	base64Cmd := &cobra.Command{
 		Use:     "base64 [flags] [file]",
 		Aliases: []string{"b64"},
 		Short:   "Encode/Decode BASE64",
 		Long:    "Encode/Decode BASE64.",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			//Options
-			out, err := cmd.Flags().GetString("output")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --output option", errs.WithCause(err)))
+			out, ferr := cmd.Flags().GetString("output")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --output option", errs.WithCause(ferr)))
+				return
 			}
-			decodeFlag, err := cmd.Flags().GetBool("decode")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --decode option", errs.WithCause(err)))
+			decodeFlag, ferr := cmd.Flags().GetBool("decode")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --decode option", errs.WithCause(ferr)))
+				return
 			}
-			noPadding, err := cmd.Flags().GetBool("no-padding")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --no-padding option", errs.WithCause(err)))
+			noPadding, ferr := cmd.Flags().GetBool("no-padding")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --no-padding option", errs.WithCause(ferr)))
+				return
 			}
-			forURL, err := cmd.Flags().GetBool("for-url")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --for-url option", errs.WithCause(err)))
+			forURL, ferr := cmd.Flags().GetBool("for-url")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --for-url option", errs.WithCause(ferr)))
+				return
 			}
 
 			//Input stream
 			r := ui.Reader()
 			if len(args) > 0 {
-				file, err := os.Open(args[0])
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", args[0])))
+				file, ferr := os.Open(filepath.Clean(args[0]))
+				if ferr != nil {
+					err = debugPrint(ui, errs.Wrap(ferr, errs.WithContext("file", args[0])))
+					return
 				}
-				defer file.Close()
+				defer func() {
+					err = errs.Join(err, file.Close())
+				}()
 				r = file
 			}
 
 			//Output stream
 			w := ui.Writer()
 			if len(out) > 0 {
-				file, err := os.Create(out)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("output", out)))
+				file, ferr := os.Create(filepath.Clean(out))
+				if ferr != nil {
+					err = debugPrint(ui, errs.Wrap(ferr, errs.WithContext("output", out)))
+					return
 				}
-				defer file.Close()
+				defer func() {
+					err = errs.Join(err, file.Close())
+				}()
 				w = file
 			}
 
@@ -78,7 +89,7 @@ func newBase64Cmd(ui *rwi.RWI) *cobra.Command {
 	return base64Cmd
 }
 
-/* Copyright 2020-2021 Spiegel
+/* Copyright 2020-2026 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

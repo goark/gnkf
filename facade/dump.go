@@ -2,6 +2,7 @@ package facade
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/goark/errs"
 	"github.com/goark/gnkf/dump"
@@ -9,32 +10,37 @@ import (
 	"github.com/spf13/cobra"
 )
 
-//newDumpCmd returns cobra.Command instance for show sub-command
+// newDumpCmd returns cobra.Command instance for show sub-command
 func newDumpCmd(ui *rwi.RWI) *cobra.Command {
 	dumpCmd := &cobra.Command{
 		Use:     "dump",
 		Aliases: []string{"hexdump", "d", "hd"},
 		Short:   "Hexadecimal view of octet data stream",
 		Long:    "Hexadecimal view of octet data stream with C language array style.",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			//Options
-			path, err := cmd.Flags().GetString("file")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --file option", errs.WithCause(err)))
+			path, ferr := cmd.Flags().GetString("file")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --file option", errs.WithCause(ferr)))
+				return
 			}
-			flagUnicode, err := cmd.Flags().GetBool("unicode")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --unicode option", errs.WithCause(err)))
+			flagUnicode, ferr := cmd.Flags().GetBool("unicode")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --unicode option", errs.WithCause(ferr)))
+				return
 			}
 
 			//Input stream
 			r := ui.Reader()
 			if len(path) > 0 {
-				file, err := os.Open(path)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", path)))
+				file, ferr := os.Open(filepath.Clean(path))
+				if ferr != nil {
+					err = debugPrint(ui, errs.Wrap(ferr, errs.WithContext("file", path)))
+					return
 				}
-				defer file.Close()
+				defer func() {
+					err = errs.Join(err, file.Close())
+				}()
 				r = file
 			}
 
@@ -45,9 +51,11 @@ func newDumpCmd(ui *rwi.RWI) *cobra.Command {
 				err = dump.Octet(ui.Writer(), r)
 			}
 			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", path)))
+				err = debugPrint(ui, errs.Wrap(err, errs.WithContext("file", path)))
+				return
 			}
-			return debugPrint(ui, errs.Wrap(ui.Outputln(), errs.WithContext("file", path)))
+			err = debugPrint(ui, errs.Wrap(ui.Outputln(), errs.WithContext("file", path)))
+			return
 		},
 	}
 	dumpCmd.Flags().StringP("file", "f", "", "path of input text file")
@@ -57,7 +65,7 @@ func newDumpCmd(ui *rwi.RWI) *cobra.Command {
 	return dumpCmd
 }
 
-/* Copyright 2020-2021 Spiegel
+/* Copyright 2020-2026 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
