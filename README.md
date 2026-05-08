@@ -5,7 +5,7 @@
 [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/goark/gnkf/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/goark/gnkf.svg)](https://github.com/goark/gnkf/releases/latest)
 
-This package is required Go 1.16 or later.
+This package is required Go 1.26 or later.
 
 **Migrated repository to [github.com/goark/gnkf][gnkf]**
 
