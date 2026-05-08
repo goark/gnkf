@@ -7,17 +7,18 @@ import (
 	"github.com/goark/errs"
 )
 
-//Encode outputs base64 encoding string from raw data.
-func Encode(forURL, noPadding bool, r io.Reader, w io.Writer) error {
+// Encode outputs base64 encoding string from raw data.
+func Encode(forURL, noPadding bool, r io.Reader, w io.Writer) (err error) {
 	wc := base64.NewEncoder(encoder(forURL, noPadding), w)
-	defer wc.Close()
-	if _, err := io.Copy(wc, r); err != nil {
-		return errs.Wrap(err)
-	}
-	return nil
+	defer func() {
+		err = errs.Join(err, wc.Close())
+	}()
+	_, err = io.Copy(wc, r)
+	err = errs.Wrap(err)
+	return
 }
 
-//Decode outputs raw data from base64 encoding string.
+// Decode outputs raw data from base64 encoding string.
 func Decode(forURL, noPadding bool, r io.Reader, w io.Writer) error {
 	if _, err := io.Copy(w, base64.NewDecoder(encoder(forURL, noPadding), r)); err != nil {
 		return errs.Wrap(err)
@@ -38,7 +39,7 @@ func encoder(forURL, noPadding bool) *base64.Encoding {
 	return enc
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2026 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

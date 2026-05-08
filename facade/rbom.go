@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/goark/errs"
 	"github.com/goark/gnkf/rbom"
@@ -11,55 +12,65 @@ import (
 	"github.com/spf13/cobra"
 )
 
-//newNormCmd returns cobra.Command instance for show sub-command
+// newNormCmd returns cobra.Command instance for show sub-command
 func newRemoveBomCmd(ui *rwi.RWI) *cobra.Command {
 	rbomCmd := &cobra.Command{
 		Use:     "remove-bom",
 		Aliases: []string{"rbom", "rb"},
 		Short:   "Remove BOM character in UTF-8 string",
 		Long:    "Remove BOM character in UTF-8 string.",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			//Options
-			inp, err := cmd.Flags().GetString("file")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --file option", errs.WithCause(err)))
+			inp, ferr := cmd.Flags().GetString("file")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --file option", errs.WithCause(ferr)))
+				return
 			}
-			out, err := cmd.Flags().GetString("output")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --output option", errs.WithCause(err)))
+			out, ferr := cmd.Flags().GetString("output")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --output option", errs.WithCause(ferr)))
+				return
 			}
 
 			//Input stream
 			r := ui.Reader()
 			if len(inp) > 0 {
-				file, err := os.Open(inp)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp)))
+				file, ferr := os.Open(filepath.Clean(inp))
+				if ferr != nil {
+					err = debugPrint(ui, errs.Wrap(ferr, errs.WithContext("file", inp)))
+					return
 				}
-				defer file.Close()
+				defer func() {
+					err = errs.Join(err, file.Close())
+				}()
 				r = file
 			}
 
 			//Output stream
 			w := ui.Writer()
 			if len(out) > 0 {
-				file, err := os.Create(out)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("output", out)))
+				file, ferr := os.Create(filepath.Clean(out))
+				if ferr != nil {
+					err = debugPrint(ui, errs.Wrap(ferr, errs.WithContext("output", out)))
+					return
 				}
-				defer file.Close()
+				defer func() {
+					err = errs.Join(err, file.Close())
+				}()
 				w = file
 			}
 
 			//Run command
-			b, err := rbom.RemoveBom(r)
-			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+			b, rerr := rbom.RemoveBom(r)
+			if rerr != nil {
+				err = debugPrint(ui, errs.Wrap(rerr, errs.WithContext("file", inp), errs.WithContext("output", out)))
+				return
 			}
-			if _, err := io.Copy(w, bytes.NewReader(b)); err != nil {
-				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+			if _, cerr := io.Copy(w, bytes.NewReader(b)); cerr != nil {
+				err = debugPrint(ui, errs.Wrap(cerr, errs.WithContext("file", inp), errs.WithContext("output", out)))
+				return
 			}
-			return nil
+			return
 		},
 	}
 	rbomCmd.Flags().StringP("file", "f", "", "path of input text file")
@@ -70,7 +81,7 @@ func newRemoveBomCmd(ui *rwi.RWI) *cobra.Command {
 	return rbomCmd
 }
 
-/* Copyright 2020-2021 Spiegel
+/* Copyright 2020-2026 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

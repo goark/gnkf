@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/goark/errs"
@@ -18,76 +19,90 @@ var descriptionKana = `Convert kana characters in the text.
  UTF-8 encoding only.
  "hiragana" and "katakana" forms are valid only for full-width kana character.`
 
-//newNormCmd returns cobra.Command instance for show sub-command
+// newNormCmd returns cobra.Command instance for show sub-command
 func newKanaCmd(ui *rwi.RWI) *cobra.Command {
 	kanaCmd := &cobra.Command{
 		Use:     "kana",
 		Aliases: []string{"k"},
 		Short:   "Convert kana characters in the text",
 		Long:    descriptionKana,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			//Options
-			inp, err := cmd.Flags().GetString("file")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --file option", errs.WithCause(err)))
+			inp, ferr := cmd.Flags().GetString("file")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --file option", errs.WithCause(ferr)))
+				return
 			}
-			out, err := cmd.Flags().GetString("output")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --output option", errs.WithCause(err)))
+			out, ferr := cmd.Flags().GetString("output")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --output option", errs.WithCause(ferr)))
+				return
 			}
-			formName, err := cmd.Flags().GetString("conversion-form")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --conversion-form option", errs.WithCause(err)))
+			formName, ferr := cmd.Flags().GetString("conversion-form")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --conversion-form option", errs.WithCause(ferr)))
+				return
 			}
-			form, err := kana.FormOf(formName)
-			if err != nil {
-				return debugPrint(ui, err)
+			form, kerr := kana.FormOf(formName)
+			if kerr != nil {
+				err = debugPrint(ui, kerr)
+				return
 			}
-			foldFlag, err := cmd.Flags().GetBool("fold")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --fold option", errs.WithCause(err)))
+			foldFlag, ferr := cmd.Flags().GetBool("fold")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --fold option", errs.WithCause(ferr)))
+				return
 			}
-			rbFlag, err := cmd.Flags().GetBool("remove-bom")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --remove-bom option", errs.WithCause(err)))
+			rbFlag, ferr := cmd.Flags().GetBool("remove-bom")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --remove-bom option", errs.WithCause(ferr)))
+				return
 			}
 
 			//Input stream
 			r := ui.Reader()
 			if len(inp) > 0 {
-				file, err := os.Open(inp)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp)))
+				file, ferr := os.Open(filepath.Clean(inp))
+				if ferr != nil {
+					err = debugPrint(ui, errs.Wrap(ferr, errs.WithContext("file", inp)))
+					return
 				}
-				defer file.Close()
+				defer func() {
+					err = errs.Join(err, file.Close())
+				}()
 				r = file
 			}
 
 			//Output stream
 			w := ui.Writer()
 			if len(out) > 0 {
-				file, err := os.Create(out)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("output", out)))
+				file, ferr := os.Create(filepath.Clean(out))
+				if ferr != nil {
+					err = debugPrint(ui, errs.Wrap(ferr, errs.WithContext("output", out)))
+					return
 				}
-				defer file.Close()
+				defer func() {
+					err = errs.Join(err, file.Close())
+				}()
 				w = file
 			}
 
 			//Remove BOM
 			if rbFlag {
-				b, err := rbom.RemoveBom(r)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+				b, rerr := rbom.RemoveBom(r)
+				if rerr != nil {
+					err = debugPrint(ui, errs.Wrap(rerr, errs.WithContext("file", inp), errs.WithContext("output", out)))
+					return
 				}
 				r = bytes.NewReader(b)
 			}
 
 			//Run command
-			if err := kana.Convert(form, w, r, foldFlag); err != nil {
-				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+			if kerr := kana.Convert(form, w, r, foldFlag); kerr != nil {
+				err = debugPrint(ui, errs.Wrap(kerr, errs.WithContext("file", inp), errs.WithContext("output", out)))
+				return
 			}
-			return nil
+			return
 		},
 	}
 	kanaCmd.Flags().StringP("file", "f", "", "path of input text file")
@@ -104,7 +119,7 @@ func newKanaCmd(ui *rwi.RWI) *cobra.Command {
 	return kanaCmd
 }
 
-/* Copyright 2020-2021 Spiegel
+/* Copyright 2020-2026 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

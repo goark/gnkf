@@ -21,7 +21,7 @@ var (
 	debugFlag bool //debug flag
 )
 
-//newRootCmd returns cobra.Command instance for root command
+// newRootCmd returns cobra.Command instance for root command
 func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:   Name,
@@ -60,12 +60,12 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 
 func debugPrint(ui *rwi.RWI, err error) error {
 	if debugFlag && err != nil {
-		fmt.Fprintf(ui.Writer(), "%+v\n", err)
+		_, _ = fmt.Fprintf(ui.Writer(), "%+v\n", err)
 	}
 	return err
 }
 
-//Execute is called from main function
+// Execute is called from main function
 func Execute(ui *rwi.RWI, args []string) (exit exitcode.ExitCode) {
 	defer func() {
 		//panic hundling

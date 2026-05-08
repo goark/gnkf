@@ -3,6 +3,7 @@ package facade
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/goark/errs"
@@ -11,55 +12,65 @@ import (
 	"github.com/spf13/cobra"
 )
 
-//newNormCmd returns cobra.Command instance for show sub-command
+// newNormCmd returns cobra.Command instance for show sub-command
 func newNwlnCmd(ui *rwi.RWI) *cobra.Command {
 	nwlnCmd := &cobra.Command{
 		Use:     "newline",
 		Aliases: []string{"nwln", "nl"},
 		Short:   "Convert newline form in the text",
 		Long:    "Convert newline form in the text.",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			//Options
-			inp, err := cmd.Flags().GetString("file")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --file option", errs.WithCause(err)))
+			inp, ferr := cmd.Flags().GetString("file")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --file option", errs.WithCause(ferr)))
+				return
 			}
-			out, err := cmd.Flags().GetString("output")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --output option", errs.WithCause(err)))
+			out, ferr := cmd.Flags().GetString("output")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --output option", errs.WithCause(ferr)))
+				return
 			}
-			form, err := cmd.Flags().GetString("newline-form")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --newline-form option", errs.WithCause(err)))
+			form, ferr := cmd.Flags().GetString("newline-form")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --newline-form option", errs.WithCause(ferr)))
+				return
 			}
 
 			//Input stream
 			r := ui.Reader()
 			if len(inp) > 0 {
-				file, err := os.Open(inp)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp)))
+				file, ferr := os.Open(filepath.Clean(inp))
+				if ferr != nil {
+					err = debugPrint(ui, errs.Wrap(ferr, errs.WithContext("file", inp)))
+					return
 				}
-				defer file.Close()
+				defer func() {
+					err = errs.Join(err, file.Close())
+				}()
 				r = file
 			}
 
 			//Output stream
 			w := ui.Writer()
 			if len(out) > 0 {
-				file, err := os.Create(out)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("output", out)))
+				file, ferr := os.Create(filepath.Clean(out))
+				if ferr != nil {
+					err = debugPrint(ui, errs.Wrap(ferr, errs.WithContext("output", out)))
+					return
 				}
-				defer file.Close()
+				defer func() {
+					err = errs.Join(err, file.Close())
+				}()
 				w = file
 			}
 
 			//Run command
-			if err := newline.Convert(form, w, r); err != nil {
-				return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp), errs.WithContext("output", out)))
+			if nerr := newline.Convert(form, w, r); nerr != nil {
+				err = debugPrint(ui, errs.Wrap(nerr, errs.WithContext("file", inp), errs.WithContext("output", out)))
+				return
 			}
-			return nil
+			return
 		},
 	}
 	nwlnCmd.Flags().StringP("file", "f", "", "path of input text file")
@@ -74,7 +85,7 @@ func newNwlnCmd(ui *rwi.RWI) *cobra.Command {
 	return nwlnCmd
 }
 
-/* Copyright 2020-2021 Spiegel
+/* Copyright 2020-2026 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

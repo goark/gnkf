@@ -11,25 +11,30 @@ import (
 	"github.com/goark/gnkf/ecode"
 )
 
-//Octet output io.Writer hex-dump of byte stream.
-func Octet(w io.Writer, r io.Reader) error {
+// Octet output io.Writer hex-dump of byte stream.
+func Octet(w io.Writer, r io.Reader) (err error) {
 	sep := ""
 	inp := bufio.NewReader(r)
 	for {
-		b, err := inp.ReadByte()
-		if err != nil {
-			if errs.Is(err, io.EOF) {
+		b, ierr := inp.ReadByte()
+		if ierr != nil {
+			if errs.Is(ierr, io.EOF) {
 				break
 			}
-			return errs.Wrap(err)
+			err = errs.Wrap(ierr)
+			return
 		}
-		fmt.Fprintf(w, "%s0x%02x", sep, b)
+		_, err = fmt.Fprintf(w, "%s0x%02x", sep, b)
+		if err != nil {
+			err = errs.Wrap(err)
+			return
+		}
 		sep = ", "
 	}
-	return nil
+	return
 }
 
-//OctetString output hex-dump string.
+// OctetString output hex-dump string.
 func OctetString(r io.Reader) string {
 	buf := &bytes.Buffer{}
 	if err := Octet(buf, r); err != nil {
@@ -38,29 +43,39 @@ func OctetString(r io.Reader) string {
 	return buf.String()
 }
 
-//UnicodePoint output io.Writer hex-dump of Unicode code point (input text is UTF-8 only).
-func UnicodePoint(w io.Writer, r io.Reader) error {
+// UnicodePoint output io.Writer hex-dump of Unicode code point (input text is UTF-8 only).
+func UnicodePoint(w io.Writer, r io.Reader) (err error) {
 	buf := &bytes.Buffer{}
-	if _, err := buf.ReadFrom(r); err != nil {
-		return errs.Wrap(err)
+	if _, err = buf.ReadFrom(r); err != nil {
+		err = errs.Wrap(err)
+		return
 	}
 	if !utf8.Valid(buf.Bytes()) {
-		return errs.Wrap(ecode.ErrInvalidUTF8Text)
+		err = errs.Wrap(ecode.ErrInvalidUTF8Text)
+		return
 	}
 
 	sep := ""
 	for _, rn := range buf.String() {
 		if (rn & 0x7fff0000) == 0 {
-			fmt.Fprintf(w, "%s0x%04x", sep, rn)
+			_, err = fmt.Fprintf(w, "%s0x%04x", sep, rn)
+			if err != nil {
+				err = errs.Wrap(err)
+				return
+			}
 		} else {
-			fmt.Fprintf(w, "%s0x%08x", sep, rn)
+			_, err = fmt.Fprintf(w, "%s0x%08x", sep, rn)
+			if err != nil {
+				err = errs.Wrap(err)
+				return
+			}
 		}
 		sep = ", "
 	}
-	return nil
+	return
 }
 
-//UnicodePointString output hex-dump string of Unicode code point (input text is UTF-8 only).
+// UnicodePointString output hex-dump string of Unicode code point (input text is UTF-8 only).
 func UnicodePointString(r io.Reader) string {
 	buf := &bytes.Buffer{}
 	if err := UnicodePoint(buf, r); err != nil {
@@ -69,7 +84,7 @@ func UnicodePointString(r io.Reader) string {
 	return buf.String()
 }
 
-/* Copyright 2020 Spiegel
+/* Copyright 2020-2026 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

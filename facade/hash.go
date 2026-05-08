@@ -21,27 +21,32 @@ func newhashCmd(ui *rwi.RWI) *cobra.Command {
 		Aliases: []string{"h"},
 		Short:   "Print or check hash value",
 		Long:    "Print or check hash value.\n  Support algorithm:\n  " + hash.AlgorithmList(", "),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			//Options
-			s, err := cmd.Flags().GetString("algorithm")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --algorithm option", errs.WithCause(err)))
+			s, ferr := cmd.Flags().GetString("algorithm")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --algorithm option", errs.WithCause(ferr)))
+				return
 			}
-			alg, err := hash.Algorithm(s)
-			if err != nil {
-				return debugPrint(ui, errs.Wrap(err, errs.WithContext("algorithm", s)))
+			alg, herr := hash.Algorithm(s)
+			if herr != nil {
+				err = debugPrint(ui, errs.Wrap(herr, errs.WithContext("algorithm", s)))
+				return
 			}
-			checkerFlag, err := cmd.Flags().GetBool("check")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --check option", errs.WithCause(err)))
+			checkerFlag, ferr := cmd.Flags().GetBool("check")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --check option", errs.WithCause(ferr)))
+				return
 			}
-			ignoreMissingFlag, err := cmd.Flags().GetBool("ignore-missing")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --ignore-missing option", errs.WithCause(err)))
+			ignoreMissingFlag, ferr := cmd.Flags().GetBool("ignore-missing")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --ignore-missing option", errs.WithCause(ferr)))
+				return
 			}
-			quietFlag, err := cmd.Flags().GetBool("quiet")
-			if err != nil {
-				return debugPrint(ui, errs.New("Error in --quiet option", errs.WithCause(err)))
+			quietFlag, ferr := cmd.Flags().GetBool("quiet")
+			if ferr != nil {
+				err = debugPrint(ui, errs.New("Error in --quiet option", errs.WithCause(ferr)))
+				return
 			}
 
 			//Input stream
@@ -49,33 +54,39 @@ func newhashCmd(ui *rwi.RWI) *cobra.Command {
 			r := ui.Reader()
 			if len(args) > 0 && args[0] != inp {
 				inp = args[0]
-				file, err := os.Open(inp)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(err, errs.WithContext("file", inp)))
+				file, ferr := os.Open(inp)
+				if ferr != nil {
+					err = debugPrint(ui, errs.Wrap(ferr, errs.WithContext("file", inp)))
+					return
 				}
-				defer file.Close()
+				defer func() {
+					err = errs.Join(err, file.Close())
+				}()
 				r = file
 			}
 
 			//Run command
 			var lastError error
 			if checkerFlag {
-				checkers, err := hash.NewCheckers(r, alg)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(lastError, errs.WithContext("algorithm", alg.String()), errs.WithContext("file", inp)))
+				checkers, herr := hash.NewCheckers(r, alg)
+				if herr != nil {
+					err = debugPrint(ui, errs.Wrap(errs.Join(lastError, herr), errs.WithContext("algorithm", alg.String()), errs.WithContext("file", inp)))
+					return
 				}
 				lastError = hashChecks(checkers, ui, ignoreMissingFlag, quietFlag)
 				if hashValidCount(checkers) == 0 {
 					lastError = errs.New(fmt.Sprintf("%s: no file was verified", inp), errs.WithContext("algorithm", alg.String()), errs.WithContext("file", inp))
 				}
 			} else {
-				res, err := newHashValue(alg, r, inp)
-				if err != nil {
-					return debugPrint(ui, errs.Wrap(lastError, errs.WithContext("algorithm", alg.String()), errs.WithContext("file", inp)))
+				res, herr := newHashValue(alg, r, inp)
+				if herr != nil {
+					err = debugPrint(ui, errs.Wrap(errs.Join(lastError, herr), errs.WithContext("algorithm", alg.String()), errs.WithContext("file", inp)))
+					return
 				}
 				lastError = ui.Outputln(res.String())
 			}
-			return debugPrint(ui, errs.Wrap(lastError, errs.WithContext("algorithm", alg.String()), errs.WithContext("file", inp)))
+			err = debugPrint(ui, errs.Wrap(lastError, errs.WithContext("algorithm", alg.String()), errs.WithContext("file", inp)))
+			return
 		},
 	}
 	hashCmd.Flags().StringP("algorithm", "a", "SHA-256", "hash algorithm")
@@ -183,7 +194,7 @@ func hashValidCount(checkers []hash.Checker) int {
 	return count
 }
 
-/* Copyright 2021 Spiegel
+/* Copyright 2021-2026 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

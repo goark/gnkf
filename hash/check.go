@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/goark/errs"
 	"github.com/goark/gnkf/ecode"
 )
 
-//Check function returns true if computed hash value is match.
+// Check function returns true if computed hash value is match.
 func Check(alg crypto.Hash, r io.Reader, hashStr string) (bool, error) {
 	v, err := Value(alg, r)
 	if err != nil {
@@ -27,17 +28,21 @@ func Check(alg crypto.Hash, r io.Reader, hashStr string) (bool, error) {
 	return true, nil
 }
 
-//Check function returns true if computed hash value is match.
-func CheckFile(alg crypto.Hash, path string, hashStr string) (bool, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return false, errs.Wrap(err, errs.WithContext("algorithm", AlgoString(alg)), errs.WithContext("path", path), errs.WithContext("hash", hashStr))
+// Check function returns true if computed hash value is match.
+func CheckFile(alg crypto.Hash, path string, hashStr string) (res bool, err error) {
+	file, ferr := os.Open(filepath.Clean(path))
+	if ferr != nil {
+		err = errs.Wrap(ferr, errs.WithContext("algorithm", AlgoString(alg)), errs.WithContext("path", path), errs.WithContext("hash", hashStr))
+		return
 	}
-	defer file.Close()
-	return Check(alg, file, hashStr)
+	defer func() {
+		err = errs.Join(err, file.Close())
+	}()
+	res, err = Check(alg, file, hashStr)
+	return
 }
 
-/* Copyright 2021 Spiegel
+/* Copyright 2021-2026 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
